@@ -1,11 +1,14 @@
-name: GitHub Actions Demo
-run-name: ${{ github.actor }} is testing out GitHub Actions 🚀
+name: HAMT Test
 on: [push]
 jobs:
-  Explore-GitHub-Actions:
+  Setup-Julia:
     runs-on: ubuntu-latest
     steps:
       - name: install-juliaup
         uses: julia-actions/install-juliaup@v2.1.2
         with:
           channel: '1'
+  Run-Tests:
+    runs-on: ubuntu-latest
+    steps:
+      - run: echo "done"
