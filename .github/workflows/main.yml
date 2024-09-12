@@ -8,6 +8,7 @@ jobs:
         uses: julia-actions/install-juliaup@v2.1.2
         with:
           channel: '1'
+      - run: julia -e 'using Pkg; Pkg.activate(\".\"); Pkg.test()'
   Run-Tests:
     runs-on: ubuntu-latest
     steps:
