@@ -11,4 +11,4 @@ jobs:
   Run-Tests:
     runs-on: ubuntu-latest
     steps:
-      - run: echo "done"
+      - run: julia --version
