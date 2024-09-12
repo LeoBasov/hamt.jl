@@ -7,10 +7,6 @@ jobs:
     steps:
       - name: insatll_julia
         uses: julia-actions/install-juliaup@v2
-        with:
-        channel: '1'
-      - run: juliaup status
-      - run: juliaup add 1.10
-      - run: juliaup update 1.10
-      - run: juliaup default 1.10
-      - run: juliaup status
+        #with:
+        #channel: '1'
+      - run: juliaup --version
