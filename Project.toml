@@ -1,0 +1,7 @@
+name = "HAMT"
+uuid = "92179113-1a75-4767-9034-8063768e90ca"
+authors = ["Leo Basov <basov.leo@gmail.com>"]
+version = "0.1.0"
+
+[deps]
+Test = "8dfed614-e22c-5e08-85e1-65c5234f0b40"
