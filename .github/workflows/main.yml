@@ -7,4 +7,5 @@ jobs:
     steps:
       - name: install-juliaup
         uses: julia-actions/install-juliaup@v2.1.2
-          
+        with:
+          channel: '1'
