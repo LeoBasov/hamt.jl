@@ -5,8 +5,6 @@ jobs:
   Explore-GitHub-Actions:
     runs-on: ubuntu-latest
     steps:
-      - name: insatll_julia
-        uses: julia-actions/install-juliaup@v2
-        #with:
-        #channel: '1'
-      - run: juliaup --version
+      - name: install-juliaup
+        uses: julia-actions/install-juliaup@v2.1.2
+          
