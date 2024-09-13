@@ -11,5 +11,6 @@ jobs:
   Run-Tests:
     runs-on: ubuntu-latest
     steps:
+      - uses: actions/checkout@v4
       - run: ls
       - run: julia -e "using Pkg; Pkg.activate(string('.')); Pkg.test()"
