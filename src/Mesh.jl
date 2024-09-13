@@ -24,15 +24,28 @@ mutable struct Node
     Node() = new([], [], [], [])
 end
 
+mutable struct Cell
+    barycentre::Vector{Float64}
+    nodes::Vector{Int}
+    boundaries::Vector{Int}
+    surface_id::Int
+
+    #size_t GetNodePos(const size_t& node_id) const;
+    #bool IsInCell(const size_t& node_id) const;
+
+    Cell() = new([0.0, 0.0, 0.0], [-1, -1, -1], [-1, -1, -1], -1)
+end
+
 mutable struct Mesh
     boundaries::Vector{Boundary}
     surfaces::Vector{Surface}
     nodes::Vector{Node}
+    cells::Vector{Cell}
 
     boundary_names::Dict{String, Int}
     surface_names::Dict{String, Int}
 
-    Mesh() = new([], [], [], Dict(), Dict())
+    Mesh() = new([], [], [], [], Dict(), Dict())
 end
 
 function read_Gmsh_file(file_name)
@@ -94,5 +107,17 @@ function setup_cells_and_nodes!(mesh, gmsh_file)
         node = Node()
         node.position = [x, y, z]
         push!(mesh.nodes, node)
+    end
+
+    for element in gmsh_file["Elements"]
+        if length(element) == 8 && element[2] == "2"
+            cell = Cell()
+            cell.surface_id = parse(Int, element[4])
+            cell.nodes[1] = parse(Int, element[6])
+            cell.nodes[2] = parse(Int, element[7])
+            cell.nodes[3] = parse(Int, element[8])
+            cell.barycentre = (mesh.nodes[cell.nodes[1]].position + mesh.nodes[cell.nodes[2]].position + mesh.nodes[cell.nodes[3]].position) / 3.0
+            push!(mesh.cells, cell)
+        end
     end
 end

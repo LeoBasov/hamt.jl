@@ -26,6 +26,15 @@ function test_convert_Gmsh2_to_Mesh()
 	@test mesh.nodes[3].position[1] == 1.5
 	@test mesh.nodes[3].position[2] == 1.0
 	@test mesh.nodes[3].position[3] == 0.0
+
+	@test length(mesh.cells) == 4
+	@test mesh.cells[2].nodes[1] == 1
+	@test mesh.cells[2].nodes[2] == 5
+	@test mesh.cells[2].nodes[3] == 4
+	@test mesh.cells[2].surface_id == 1
+	@test mesh.cells[2].barycentre[1] == 3.25/3.0
+	@test mesh.cells[2].barycentre[2] == 2.25/3.0
+	@test mesh.cells[2].barycentre[3] == 0.0
 end
 
 @testset "Mesh.jl" begin
