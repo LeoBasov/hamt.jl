@@ -30,10 +30,21 @@ mutable struct Cell
     boundaries::Vector{Int}
     surface_id::Int
 
-    #size_t GetNodePos(const size_t& node_id) const;
-    #bool IsInCell(const size_t& node_id) const;
+    get_node_pos::Function
+    is_in_cell::Function
 
-    Cell() = new([0.0, 0.0, 0.0], [-1, -1, -1], [-1, -1, -1], -1)
+    function get_node_pos(node_id)
+        for i=1:3
+            if nodes[i] == node_id
+                return i
+            end
+        end
+        error("node not found")
+    end
+
+    is_in_cell(node_id) = node_id in nodes
+
+    Cell() = new([0.0, 0.0, 0.0], [-1, -1, -1], [-1, -1, -1], -1, get_node_pos, is_in_cell)
 end
 
 mutable struct Mesh
