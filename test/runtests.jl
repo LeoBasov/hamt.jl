@@ -21,6 +21,11 @@ function test_convert_Gmsh2_to_Mesh()
 	@test length(mesh.surfaces) == 1
 	@test length(mesh.surface_names) == 1
 	@test mesh.surface_names["surf"] == 1
+
+	@test length(mesh.nodes) == 5
+	@test mesh.nodes[3].position[1] == 1.5
+	@test mesh.nodes[3].position[2] == 1.0
+	@test mesh.nodes[3].position[3] == 0.0
 end
 
 @testset "Mesh.jl" begin

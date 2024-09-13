@@ -15,14 +15,24 @@ mutable struct Surface
     Surface() = new(1.0, 1.0, 1.0, 0.0)
 end
 
+mutable struct Node
+    position::Vector
+    adjacent_nodes::Vector{Int}  # ordered counter clockwise
+    adjacent_cells::Vector{Int}  # ordered counter clockwise
+    boundaries::Vector{Int}
+
+    Node() = new([], [], [], [])
+end
+
 mutable struct Mesh
     boundaries::Vector{Boundary}
     surfaces::Vector{Surface}
+    nodes::Vector{Node}
 
     boundary_names::Dict{String, Int}
     surface_names::Dict{String, Int}
 
-    Mesh() = new([], [], Dict(), Dict())
+    Mesh() = new([], [], [], Dict(), Dict())
 end
 
 function read_Gmsh_file(file_name)
@@ -52,6 +62,7 @@ function convert_Gmsh2_to_Mesh(gmsh_file)
     mesh = Mesh()
 
     setup_physical_properties!(mesh, gmsh_file)
+    setup_cells_and_nodes!(mesh, gmsh_file)
 
     return mesh
 end
@@ -71,5 +82,17 @@ function setup_physical_properties!(mesh, gmsh_file)
             name_str = rstrip(lstrip(name[3], '"'), '"')
             mesh.surface_names[name_str] = length(mesh.surfaces)
         end
+    end
+end
+
+function setup_cells_and_nodes!(mesh, gmsh_file)
+    for i = 2:length(gmsh_file["Nodes"])
+        gmsh_node = gmsh_file["Nodes"][i]
+        x = parse(Float64, gmsh_node[2])
+        y = parse(Float64, gmsh_node[3])
+        z = parse(Float64, gmsh_node[4])
+        node = Node()
+        node.position = [x, y, z]
+        push!(mesh.nodes, node)
     end
 end
