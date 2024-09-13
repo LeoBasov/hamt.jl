@@ -11,6 +11,14 @@ function test_read_Gmsh_file()
 	@test gmsh_file["Nodes"][2][3] == "0.5"
 end
 
+function test_convert_Gmsh2_to_Mesh()
+	gmsh_file = HAMT.read_Gmsh_file("test_data/block_single_triangular.msh")
+	mesh = HAMT.convert_Gmsh2_to_Mesh(gmsh_file)
+
+	@test length(mesh.boundaries) == 4
+end
+
 @testset "Mesh.jl" begin
 	test_read_Gmsh_file()
+	test_convert_Gmsh2_to_Mesh()
 end
