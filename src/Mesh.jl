@@ -76,6 +76,7 @@ function convert_Gmsh2_to_Mesh(gmsh_file)
 
     setup_physical_properties!(mesh, gmsh_file)
     setup_cells_and_nodes!(mesh, gmsh_file)
+    connect_mesh!(mesh)
 
     return mesh
 end
@@ -140,6 +141,15 @@ function setup_cells_and_nodes!(mesh, gmsh_file)
                     end
                 end
             end
+        end
+    end
+end
+
+function connect_mesh!(mesh)
+    # setup adjacent nodes
+    for i=1:length(mesh.cells)
+        for node_id in mesh.cells[i].nodes
+            push!(mesh.nodes[node_id].adjacent_cells, i)
         end
     end
 end
