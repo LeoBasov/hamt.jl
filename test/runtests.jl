@@ -16,6 +16,8 @@ function test_convert_Gmsh2_to_Mesh()
 	mesh = HAMT.convert_Gmsh2_to_Mesh(gmsh_file)
 
 	@test length(mesh.boundaries) == 4
+	@test length(mesh.boundary_names) == 4
+	@test mesh.boundary_names["top"] == 3
 end
 
 @testset "Mesh.jl" begin

@@ -8,8 +8,9 @@ end
 
 mutable struct Mesh
     boundaries::Vector{Boundary}
+    boundary_names::Dict{String, Int}
 
-    Mesh() = new([])
+    Mesh() = new([], Dict())
 end
 
 function read_Gmsh_file(file_name)
@@ -47,8 +48,11 @@ function setup_physical_properties!(mesh, gmsh_file)
     for name in gmsh_file["PhysicalNames"]
         if length(name) > 1 && name[1] == "1"
             boundary = Boundary()
-
             push!(mesh.boundaries, boundary)
+
+            name_str = rstrip(lstrip(name[3], '"'), '"')
+            mesh.boundary_names[name_str] = length(mesh.boundaries)
+            
         elseif length(name) > 1 && name[1] == "2"
             continue
         end
