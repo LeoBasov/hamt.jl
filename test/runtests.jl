@@ -18,6 +18,9 @@ function test_convert_Gmsh2_to_Mesh()
 	@test length(mesh.boundaries) == 4
 	@test length(mesh.boundary_names) == 4
 	@test mesh.boundary_names["top"] == 3
+	@test length(mesh.surfaces) == 1
+	@test length(mesh.surface_names) == 1
+	@test mesh.surface_names["surf"] == 1
 end
 
 @testset "Mesh.jl" begin
