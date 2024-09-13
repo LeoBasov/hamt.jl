@@ -57,6 +57,11 @@ function test_convert_Gmsh2_to_Mesh()
 	@test length(mesh.nodes[3].adjacent_cells) == 2
 	@test length(mesh.nodes[4].adjacent_cells) == 2
 	@test length(mesh.nodes[5].adjacent_cells) == 4
+
+	@test mesh.nodes[5].adjacent_cells[1] == 1
+	@test mesh.nodes[5].adjacent_cells[2] == 2
+	@test mesh.nodes[5].adjacent_cells[3] == 3
+	@test mesh.nodes[5].adjacent_cells[4] == 4
 end
 
 @testset "Mesh.jl" begin
