@@ -99,6 +99,7 @@ function setup_physical_properties!(mesh, gmsh_file)
 end
 
 function setup_cells_and_nodes!(mesh, gmsh_file)
+    # setup nodes
     for i = 2:length(gmsh_file["Nodes"])
         gmsh_node = gmsh_file["Nodes"][i]
         x = parse(Float64, gmsh_node[2])
@@ -109,8 +110,9 @@ function setup_cells_and_nodes!(mesh, gmsh_file)
         push!(mesh.nodes, node)
     end
 
+    # setup cells
     for element in gmsh_file["Elements"]
-        if length(element) == 8 && element[2] == "2"
+        if length(element) > 1 && element[2] == "2"
             cell = Cell()
             cell.surface_id = parse(Int, element[4])
             cell.nodes[1] = parse(Int, element[6])
@@ -118,6 +120,24 @@ function setup_cells_and_nodes!(mesh, gmsh_file)
             cell.nodes[3] = parse(Int, element[8])
             cell.barycentre = (mesh.nodes[cell.nodes[1]].position + mesh.nodes[cell.nodes[2]].position + mesh.nodes[cell.nodes[3]].position) / 3.0
             push!(mesh.cells, cell)
+        end
+    end
+
+    # setup boundaries
+    for element in gmsh_file["Elements"]
+        if length(element) > 1 && element[2] == "1"
+            for cell in mesh.cells
+                items = findall(x -> x == parse(Int, element[6]) || x == parse(Int,element[7]), cell.nodes)
+                if length(items) == 2
+                    if items[1] == 1 && items[2] == 2
+                        cell.boundaries[1] = parse(Int, element[4])
+                    elseif items[1] == 2 && items[2] == 3
+                        cell.boundaries[2] = parse(Int, element[4])
+                    elseif items[1] == 1 && items[2] == 3
+                        cell.boundaries[3] = parse(Int, element[4])
+                    end
+                end
+            end
         end
     end
 end
