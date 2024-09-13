@@ -135,6 +135,8 @@ function setup_cells_and_nodes!(mesh, gmsh_file)
                         cell.boundaries[2] = parse(Int, element[4])
                     elseif items[1] == 1 && items[2] == 3
                         cell.boundaries[3] = parse(Int, element[4])
+                    else
+                        error("unacceptrable combination of cell indices")
                     end
                 end
             end
