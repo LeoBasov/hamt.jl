@@ -30,21 +30,7 @@ mutable struct Cell
     boundaries::Vector{Int}
     surface_id::Int
 
-    get_node_pos::Function
-    is_in_cell::Function
-
-    function get_node_pos(node_id)
-        for i=1:3
-            if nodes[i] == node_id
-                return i
-            end
-        end
-        error("node not found")
-    end
-
-    is_in_cell(node_id) = node_id in nodes
-
-    Cell() = new([0.0, 0.0, 0.0], [-1, -1, -1], [-1, -1, -1], -1, get_node_pos, is_in_cell)
+    Cell() = new([0.0, 0.0, 0.0], [-1, -1, -1], [-1, -1, -1], -1)
 end
 
 mutable struct Mesh
@@ -157,10 +143,22 @@ function setup_cells_and_nodes!(mesh, gmsh_file)
 end
 
 function connect_mesh!(mesh)
+    # setup adjacent cells
+    for n=1:length(mesh.nodes), c=1:length(mesh.cells)
+        if n in mesh.cells[c].nodes
+            push!(mesh.nodes[n].adjacent_cells, c)
+        end
+    end
+
     # setup adjacent nodes
-    for i=1:length(mesh.cells)
-        for node_id in mesh.cells[i].nodes
-            push!(mesh.nodes[node_id].adjacent_cells, i)
+    for n=1:length(mesh.nodes)
+        node = mesh.nodes[n]
+        for c=1:length(node.adjacent_cells)
+            cell = mesh.cells[c]
+            #pos = cell.get_node_pos(n)
+            #pos_p1 = i%3 + 1
+            #pos_p2 = pos > 1 ? pos - 1 : 3
+            #if !(cell.nodes[pos_p1] in node.adjacent_nodes) push!(node.adjacent_nodes, cell.nodes[pos_p1]) end
         end
     end
 end
