@@ -155,10 +155,15 @@ function connect_mesh!(mesh)
         node = mesh.nodes[n]
         for c=1:length(node.adjacent_cells)
             cell = mesh.cells[c]
-            #pos = cell.get_node_pos(n)
-            #pos_p1 = i%3 + 1
-            #pos_p2 = pos > 1 ? pos - 1 : 3
-            #if !(cell.nodes[pos_p1] in node.adjacent_nodes) push!(node.adjacent_nodes, cell.nodes[pos_p1]) end
+            pos_vec = findall(x -> x == n, cell.nodes)
+
+            if length(pos_vec) == 1
+                pos = pos_vec[1]
+                pos_p1 = pos < 3 ? pos + 1 : 1
+                pos_p2 = pos > 1 ? pos - 1 : 3
+                if !(cell.nodes[pos_p1] in node.adjacent_nodes) push!(node.adjacent_nodes, cell.nodes[pos_p1]) end
+                if !(cell.nodes[pos_p2] in node.adjacent_nodes) push!(node.adjacent_nodes, cell.nodes[pos_p2]) end
+            end
         end
     end
 end
