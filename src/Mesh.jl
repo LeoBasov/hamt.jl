@@ -150,6 +150,14 @@ function connect_mesh!(mesh)
         end
     end
 
+    # sort adjacent cell
+    for node in mesh.nodes
+        adjacent_cells = [node.adjacent_cells[begin]]
+        for cell in node.adjacent_cells
+            # TODO
+        end
+    end
+
     # setup adjacent nodes
     for n=1:length(mesh.nodes)
         node = mesh.nodes[n]
