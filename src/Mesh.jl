@@ -183,8 +183,7 @@ function connect_mesh!(mesh)
                 end
 
                 if cc == length(node.adjacent_cells)
-                    str = "n: " * string(n) *" id_c1 " * string(id1) *" id_c2 " * string(id2) * " node_id1 " * string(node_id1) * " node_id2 " * string(node_id2) * " mesh.cells[id1].nodes " * string(mesh.cells[id1].nodes)
-                    error(str)
+                    error("sorting of adjacent cells failed")
                 end
             end
         end
