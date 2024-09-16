@@ -36,18 +36,26 @@ function test_convert_Gmsh2_to_Mesh()
 	@test mesh.cells[2].barycentre[2] == 2.25/3.0
 	@test mesh.cells[2].barycentre[3] == 0.0
 
+	@test mesh.cells[1].nodes[1] == 2
+	@test mesh.cells[1].nodes[2] == 5
 	@test mesh.cells[1].boundaries[1] == -1
 	@test mesh.cells[1].boundaries[2] == -1
 	@test mesh.cells[1].boundaries[3] == 1
 
+	@test mesh.cells[2].nodes[1] == 1
+	@test mesh.cells[2].nodes[2] == 5
 	@test mesh.cells[2].boundaries[1] == -1
 	@test mesh.cells[2].boundaries[2] == -1
 	@test mesh.cells[2].boundaries[3] == 4
 
+	@test mesh.cells[3].nodes[1] == 3
+	@test mesh.cells[3].nodes[2] == 5
 	@test mesh.cells[3].boundaries[1] == -1
 	@test mesh.cells[3].boundaries[2] == -1
 	@test mesh.cells[3].boundaries[3] == 2
 
+	@test mesh.cells[4].nodes[1] == 4
+	@test mesh.cells[4].nodes[2] == 5
 	@test mesh.cells[4].boundaries[1] == -1
 	@test mesh.cells[4].boundaries[2] == -1
 	@test mesh.cells[4].boundaries[3] == 3
