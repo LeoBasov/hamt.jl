@@ -183,7 +183,15 @@ function connect_mesh!(mesh)
                 end
 
                 if cc == length(node.adjacent_cells)
-                    error("sorting of adjacent cells failed")
+                    for q=1:length(node.adjacent_cells)
+                        if q!=c1 && sum(mesh.cells[node.adjacent_cells[q]].boundaries) > -3
+                            c_new = node.adjacent_cells[q]
+                            node.adjacent_cells[q] = node.adjacent_cells[1]
+                            node.adjacent_cells[1] = c_new
+                            c1 = 1
+                            break
+                        end
+                    end
                 end
             end
         end

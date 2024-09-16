@@ -83,7 +83,30 @@ function test_convert_Gmsh2_to_Mesh()
 	@test mesh.nodes[5].adjacent_nodes[4] == 4
 end
 
+function test_ntr_mesh()
+	gmsh_file = HAMT.read_Gmsh_file("test_data/ntr.msh")
+	mesh = HAMT.convert_Gmsh2_to_Mesh(gmsh_file)
+
+	@test length(mesh.nodes[2].adjacent_cells) == 6
+	@test mesh.nodes[2].adjacent_cells[1] == 1850
+	@test mesh.nodes[2].adjacent_cells[2] == 1846
+	@test mesh.nodes[2].adjacent_cells[3] == 498
+	@test mesh.nodes[2].adjacent_cells[4] == 600
+	@test mesh.nodes[2].adjacent_cells[5] == 147
+	@test mesh.nodes[2].adjacent_cells[6] == 111
+
+	@test length(mesh.nodes[2].adjacent_nodes) == 7
+	@test mesh.nodes[2].adjacent_nodes[1] == 303
+	@test mesh.nodes[2].adjacent_nodes[2] == 1090
+	@test mesh.nodes[2].adjacent_nodes[3] == 66
+	@test mesh.nodes[2].adjacent_nodes[4] == 531
+	@test mesh.nodes[2].adjacent_nodes[5] == 38
+	@test mesh.nodes[2].adjacent_nodes[6] == 375
+	@test mesh.nodes[2].adjacent_nodes[7] == 37
+end
+
 @testset "Mesh.jl" begin
 	test_read_Gmsh_file()
 	test_convert_Gmsh2_to_Mesh()
+	test_ntr_mesh()
 end
