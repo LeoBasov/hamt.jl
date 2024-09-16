@@ -175,8 +175,6 @@ function connect_mesh!(mesh)
                 node_id2 = mesh.cells[id2].nodes[pos_c22]
 
                 if node_id1 == node_id2
-                    #str = "n: " * string(n) *" id_c1 " * string(id1) *" id_c2 " * string(id2) * " node_id1 " * string(node_id1) * " node_id2 " * string(node_id2) * " mesh.cells[id1].nodes " * string(mesh.cells[id1].nodes)
-                    #error(str)
                     c2_new = node.adjacent_cells[cc]
                     node.adjacent_cells[cc] = node.adjacent_cells[c1 + 1]
                     node.adjacent_cells[c1 + 1] = c2_new
@@ -193,19 +191,17 @@ function connect_mesh!(mesh)
     end
 
     # setup adjacent nodes
-    for n=1:length(mesh.nodes)
+    for n=1:length(mesh.nodes), c=1:length(mesh.nodes[n].adjacent_cells)
         node = mesh.nodes[n]
-        for c=1:length(node.adjacent_cells)
-            cell = mesh.cells[c]
-            pos_vec = findall(x -> x == n, cell.nodes)
+        cell = mesh.cells[node.adjacent_cells[c]]
+        pos_vec = findall(x -> x == n, cell.nodes)
 
-            if length(pos_vec) == 1
-                pos = pos_vec[1]
-                pos_p1 = pos < 3 ? pos + 1 : 1
-                pos_p2 = pos > 1 ? pos - 1 : 3
-                if !(cell.nodes[pos_p1] in node.adjacent_nodes) push!(node.adjacent_nodes, cell.nodes[pos_p1]) end
-                if !(cell.nodes[pos_p2] in node.adjacent_nodes) push!(node.adjacent_nodes, cell.nodes[pos_p2]) end
-            end
+        if length(pos_vec) == 1
+            pos = pos_vec[1]
+            pos_p1 = pos < 3 ? pos + 1 : 1
+            pos_p2 = pos > 1 ? pos - 1 : 3
+            if !(cell.nodes[pos_p1] in node.adjacent_nodes) push!(node.adjacent_nodes, cell.nodes[pos_p1]) end
+            if !(cell.nodes[pos_p2] in node.adjacent_nodes) push!(node.adjacent_nodes, cell.nodes[pos_p2]) end
         end
     end
 end
