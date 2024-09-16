@@ -151,10 +151,44 @@ function connect_mesh!(mesh)
     end
 
     # sort adjacent cell
-    for node in mesh.nodes
-        adjacent_cells = [node.adjacent_cells[begin]]
-        for cell in node.adjacent_cells
-            # TODO
+    for n=1:length(mesh.nodes)
+        node = mesh.nodes[n]
+        if length(node.adjacent_cells) < 3
+            continue
+        end
+
+        c1 = 1
+        while true
+            if c1 >= (length(node.adjacent_cells) - 1)
+                break
+            end
+
+            id1 = node.adjacent_cells[c1]
+            pos_c1 = findall(x -> x == n, mesh.cells[id1].nodes)[begin]
+            pos_c11 = pos_c1 > 1 ? pos_c1 - 1 : 3
+            node_id1 = mesh.cells[id1].nodes[pos_c11]
+
+            for cc=(c1 + 1):length(node.adjacent_cells)
+                id2 = node.adjacent_cells[cc]
+                pos_c2 = findall(x -> x == n, mesh.cells[id2].nodes)[begin]
+                pos_c22 =  pos_c2 < 3 ? pos_c2 + 1 : 1
+                node_id2 = mesh.cells[id2].nodes[pos_c22]
+
+                if node_id1 == node_id2
+                    #str = "n: " * string(n) *" id_c1 " * string(id1) *" id_c2 " * string(id2) * " node_id1 " * string(node_id1) * " node_id2 " * string(node_id2) * " mesh.cells[id1].nodes " * string(mesh.cells[id1].nodes)
+                    #error(str)
+                    c2_new = node.adjacent_cells[cc]
+                    node.adjacent_cells[cc] = node.adjacent_cells[c1 + 1]
+                    node.adjacent_cells[c1 + 1] = c2_new
+                    c1 += 1
+                    break
+                end
+
+                if cc == length(node.adjacent_cells)
+                    str = "n: " * string(n) *" id_c1 " * string(id1) *" id_c2 " * string(id2) * " node_id1 " * string(node_id1) * " node_id2 " * string(node_id2) * " mesh.cells[id1].nodes " * string(mesh.cells[id1].nodes)
+                    error(str)
+                end
+            end
         end
     end
 
