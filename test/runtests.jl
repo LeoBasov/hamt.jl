@@ -117,7 +117,7 @@ end
 	test_ntr_mesh()
 end
 
-@testset "Solver.jl" begin
+function simple_triangular_solver_test()
 	gmsh_file = HAMT.read_Gmsh_file("test_data/block_single_triangular.msh")
 	mesh = HAMT.convert_Gmsh2_to_Mesh(gmsh_file)
 	matrix, vector = HAMT.convert_triangular_mesh(mesh)
@@ -153,4 +153,29 @@ end
 	@test solution[3] == 1.0
 	@test solution[4] == 1.0
 	@test solution[5] == 1.0
+end
+
+function set_boundary_test()
+	gmsh_file = HAMT.read_Gmsh_file("test_data/block_single_triangular.msh")
+	mesh = HAMT.convert_Gmsh2_to_Mesh(gmsh_file)
+	HAMT.set_boundary!(mesh, "top", HAMT.DIRICHLET, 3.0)
+	matrix, vector = HAMT.convert_triangular_mesh(mesh)
+	solution = HAMT.solve_heat_equation(mesh)
+
+	@test vector[1] == 1.0
+	@test vector[2] == 1.0
+	@test vector[3] == 2.0
+	@test vector[4] == 2.0
+	@test vector[5] == 0.0
+
+	@test solution[1] == 1.0
+	@test solution[2] == 1.0
+	@test solution[3] == 2.0
+	@test solution[4] == 2.0
+	@test solution[5] == 1.5
+end
+
+@testset "Solver.jl" begin
+	simple_triangular_solver_test()
+	set_boundary_test()
 end
