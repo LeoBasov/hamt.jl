@@ -1,7 +1,7 @@
 using WriteVTK
 using HAMT
 
-function write_mesh(mesh, solution)
+function write_mesh(file_name, mesh, solution)
     points::Matrix{Float64} = zeros(3, 3*length(mesh.cells))
     cells::Vector{MeshCell} = []
     sol::Matrix{Float64} = zeros(1, 3*length(mesh.cells))
@@ -16,7 +16,7 @@ function write_mesh(mesh, solution)
         end
     end
 
-    vtk_grid("filename", points, cells) do vtk
+    vtk_grid(file_name, points, cells) do vtk
         vtk["temperature", VTKPointData()] = sol
     end
 end
