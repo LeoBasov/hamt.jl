@@ -60,6 +60,12 @@ function set_boundary!(mesh, name, type, value)
     boundary.value = value
 end
 
+function set_surface_property!(mesh, name, type, value)
+    surf_id = mesh.surface_names[name]
+    surface = mesh.surfaces[surf_id]
+    surface.properties[type] = value
+end
+
 function get_cell_area(mesh, cell_id)
     cell = mesh.cells[cell_id]
     point1 = mesh.nodes[cell.nodes[1]].position

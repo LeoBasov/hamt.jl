@@ -2,6 +2,7 @@ module HAMT
 
 export read_mesh
 export set_boundary
+export set_surface
 export execute
 export export_solution
 
@@ -27,6 +28,13 @@ function set_boundary(name, type, value)
     global mesh
     set_boundary!(mesh, name, type, value)
     print("set boundary [" * name * "] to type [" * string(type) * "] and value [" * string(value) *"]\n")
+    return nothing
+end
+
+function set_surface(name, type, value)
+    global mesh
+    set_surface_property!(mesh, name, type, value)
+    print("set surface [" * name * "] to type [" * type * "] and value [" * string(value) *"]\n")
     return nothing
 end
 
