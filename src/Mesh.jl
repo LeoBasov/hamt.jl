@@ -9,12 +9,16 @@ mutable struct Boundary
 end
 
 mutable struct Surface
-    thermal_conductivity
-    heat_capacity
-    density
-    volumetric_heat_source
+    properties::Dict{String, Number}
 
-    Surface() = new(1.0, 1.0, 1.0, 0.0)
+    function Surface()
+        properties::Dict{String, Number} = Dict()
+
+        properties["thermal_conductivity"] = 1.0
+        properties["volumetric_heat_source"] = 0.0
+
+        new(properties)
+    end
 end
 
 mutable struct Node

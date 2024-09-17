@@ -55,11 +55,11 @@ function convert_center!(matrix, vector, mesh, node_id)
 
         surface_br = mesh.surfaces[cell.surface_id]
 
-        matrix[node_id, node_id] += (phi_ii_x + phi_ii_y) * surface_br.thermal_conductivity;
-        matrix[node_id, node_id_im] += (phi_im_x + phi_im_y) * surface_br.thermal_conductivity;
-        matrix[node_id, node_id_ip] += (phi_ip_x + phi_ip_y) * surface_br.thermal_conductivity;
+        matrix[node_id, node_id] += (phi_ii_x + phi_ii_y) * surface_br.properties["thermal_conductivity"]
+        matrix[node_id, node_id_im] += (phi_im_x + phi_im_y) * surface_br.properties["thermal_conductivity"]
+        matrix[node_id, node_id_ip] += (phi_ip_x + phi_ip_y) * surface_br.properties["thermal_conductivity"]
 
-        vector[node_id] += (1.0 / 6.0) * surface_br.volumetric_heat_source * det_J
+        vector[node_id] += (1.0 / 6.0) * surface_br.properties["volumetric_heat_source"] * det_J
     end
 end
 
