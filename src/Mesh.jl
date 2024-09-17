@@ -211,4 +211,20 @@ function connect_mesh!(mesh)
             if !(cell.nodes[pos_p2] in node.adjacent_nodes) push!(node.adjacent_nodes, cell.nodes[pos_p2]) end
         end
     end
+
+    # connect nodes to boundaries
+    for n=1:length(mesh.nodes)
+        node = mesh.nodes[n]
+        for c in node.adjacent_cells
+            cell = mesh.cells[c]
+            pos1 = findall(x -> x == n, cell.nodes)[1]
+            pos2 = pos1 == 1 ? 3 : pos1 - 1
+            if cell.boundaries[pos1] > -1
+                push!(node.boundaries, cell.boundaries[pos1])
+            end
+            if cell.boundaries[pos2] > -1
+                push!(node.boundaries, cell.boundaries[pos2])
+            end
+        end
+    end
 end

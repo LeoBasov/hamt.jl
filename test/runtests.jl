@@ -81,6 +81,12 @@ function test_convert_Gmsh2_to_Mesh()
 	@test mesh.nodes[5].adjacent_nodes[2] == 2
 	@test mesh.nodes[5].adjacent_nodes[3] == 3
 	@test mesh.nodes[5].adjacent_nodes[4] == 4
+
+	@test length(mesh.nodes[1].boundaries) == 2
+	@test length(mesh.nodes[2].boundaries) == 2
+	@test length(mesh.nodes[3].boundaries) == 2
+	@test length(mesh.nodes[4].boundaries) == 2
+	@test length(mesh.nodes[5].boundaries) == 0
 end
 
 function test_ntr_mesh()
