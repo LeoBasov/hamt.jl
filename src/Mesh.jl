@@ -45,6 +45,13 @@ mutable struct Mesh
     Mesh() = new([], [], [], [], Dict(), Dict())
 end
 
+function set_boundary!(mesh, name, type, value)
+    bound_id = mesh.boundary_names[name]
+    boundary = mesh.boundaries[bound_id]
+    boundary.type = type
+    boundary.value = value
+end
+
 function read_Gmsh_file(file_name)
 	str = ""
 	res = Dict()
