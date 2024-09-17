@@ -5,7 +5,7 @@ export set_boundary
 export execute
 export export_solution
 
-export DIRICHLET
+export DIRICHLET, DIRICHLET, RADIATION, HEAT_FLUX
 
 include("Mesh.jl")
 include("Writer.jl")
