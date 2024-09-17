@@ -44,8 +44,9 @@ mutable struct Mesh
     boundary_names::Dict{String, Int}
     surface_names::Dict{String, Int}
     boundary_ids::Dict{Int, Int}
+    surface_ids::Dict{Int, Int}
 
-    Mesh() = new([], [], [], [], Dict(), Dict(), Dict())
+    Mesh() = new([], [], [], [], Dict(), Dict(), Dict(), Dict())
 end
 
 function set_boundary!(mesh, name, type, value)
@@ -115,6 +116,7 @@ function setup_physical_properties!(mesh, gmsh_file)
 
             name_str = rstrip(lstrip(name[3], '"'), '"')
             mesh.surface_names[name_str] = length(mesh.surfaces)
+            mesh.surface_ids[parse(Int, name[2])] = length(mesh.surfaces)
         end
     end
 end
@@ -135,7 +137,8 @@ function setup_cells_and_nodes!(mesh, gmsh_file)
     for element in gmsh_file["Elements"]
         if length(element) > 1 && element[2] == "2"
             cell = Cell()
-            cell.surface_id = parse(Int, element[4])
+            surf_id = parse(Int, element[4])
+            cell.surface_id = mesh.surface_ids[surf_id]
             cell.nodes[1] = parse(Int, element[6])
             cell.nodes[2] = parse(Int, element[7])
             cell.nodes[3] = parse(Int, element[8])
