@@ -127,11 +127,22 @@ end
 	@test length(vector) == length(mesh.nodes)
 	@test length(solution) == length(mesh.nodes)
 	
-	#@test matrix[1, 1] == 1.0
+	#TODO: update tests
+	@test vector[1] == 1.0
+	@test vector[2] == 1.0
+	@test vector[3] == 1.0
+	@test vector[4] == 1.0
+	@test vector[5] == 0.0
 
-	#=@test solution[1] == 1.0
-	@test solution[2] == 1.0
-	@test solution[3] == 1.0
-	@test solution[4] == 1.0
-	@test solution[5] == 1.0=#
+	#TODO: update tests
+	@test matrix[1, 1] == 1.0
+	@test matrix[2, 2] == 1.0
+	@test matrix[3, 3] == 1.0
+	@test matrix[4, 4] == 1.0
+
+	@test matrix[5, 1] == -1.0
+	@test matrix[5, 2] == -1.0
+	@test matrix[5, 3] == -1.0
+	@test matrix[5, 4] == -1.0
+	@test matrix[5, 5] == 4.0
 end
