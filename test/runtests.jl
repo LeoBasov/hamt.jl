@@ -120,4 +120,12 @@ end
 	@test size(matrix) === (length(mesh.nodes), length(mesh.nodes))
 	@test length(vector) == length(mesh.nodes)
 	@test length(solution) == length(mesh.nodes)
+	
+	#@test matrix[1, 1] == 1.0
+
+	#=@test solution[1] == 1.0
+	@test solution[2] == 1.0
+	@test solution[3] == 1.0
+	@test solution[4] == 1.0
+	@test solution[5] == 1.0=#
 end
