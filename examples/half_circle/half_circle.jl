@@ -1,6 +1,6 @@
 using HAMT
 
-read_mesh("examples/half_circle/circle.msh")
+read_mesh("examples/half_circle/circle_very_fine.msh")
 
 set_boundary("inner", DIRICHLET, 100.0)
 set_boundary("outer", DIRICHLET, 300.0)
