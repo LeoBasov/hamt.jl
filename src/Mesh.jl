@@ -182,45 +182,33 @@ function connect_mesh!(mesh)
     # sort adjacent cell
     for n=1:length(mesh.nodes)
         node = mesh.nodes[n]
-        if length(node.adjacent_cells) < 3
-            continue
-        end
-
-        c1 = 1
-        while true
-            if c1 >= (length(node.adjacent_cells) - 1)
+        for c=1:length(node.adjacent_cells)
+            cell = mesh.cells[node.adjacent_cells[c]]
+            pos = findall(x -> x == n, cell.nodes)[begin]
+            if sum(cell.boundaries) > -3 && cell.boundaries[pos] > -1
+                c_old = node.adjacent_cells[1]
+                node.adjacent_cells[1] = node.adjacent_cells[c]
+                node.adjacent_cells[c] = c_old
                 break
             end
+        end
 
-            id1 = node.adjacent_cells[c1]
+        for c_first=1:length(node.adjacent_cells)
+            id1 = node.adjacent_cells[c_first]
             pos_c1 = findall(x -> x == n, mesh.cells[id1].nodes)[begin]
             pos_c11 = pos_c1 > 1 ? pos_c1 - 1 : 3
             node_id1 = mesh.cells[id1].nodes[pos_c11]
-
-            for cc=(c1 + 1):length(node.adjacent_cells)
-                id2 = node.adjacent_cells[cc]
-                pos_c2 = findall(x -> x == n, mesh.cells[id2].nodes)[begin]
+            for c_second=(c_first+1):length(node.adjacent_cells)
+                id_second = node.adjacent_cells[c_second]
+                pos_c2 = findall(x -> x == n, mesh.cells[id_second].nodes)[begin]
                 pos_c22 =  pos_c2 < 3 ? pos_c2 + 1 : 1
-                node_id2 = mesh.cells[id2].nodes[pos_c22]
+                node_id2 = mesh.cells[id_second].nodes[pos_c22]
 
                 if node_id1 == node_id2
-                    c2_new = node.adjacent_cells[cc]
-                    node.adjacent_cells[cc] = node.adjacent_cells[c1 + 1]
-                    node.adjacent_cells[c1 + 1] = c2_new
-                    c1 += 1
+                    c2_new = node.adjacent_cells[c_second]
+                    node.adjacent_cells[c_second] = node.adjacent_cells[c_first + 1]
+                    node.adjacent_cells[c_first + 1] = c2_new
                     break
-                end
-
-                if cc == length(node.adjacent_cells)
-                    for q=1:length(node.adjacent_cells)
-                        if q!=c1 && sum(mesh.cells[node.adjacent_cells[q]].boundaries) > -3
-                            c_new = node.adjacent_cells[q]
-                            node.adjacent_cells[q] = node.adjacent_cells[1]
-                            node.adjacent_cells[1] = c_new
-                            c1 = 1
-                            break
-                        end
-                    end
                 end
             end
         end
