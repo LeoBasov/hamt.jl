@@ -1,3 +1,5 @@
+using LinearAlgebra
+
 @enum BoundaryType NEUMANN=1 DIRICHLET=2 RADIATION=3 HEAT_FLUX=4
 
 mutable struct Boundary
@@ -51,6 +53,18 @@ function set_boundary!(mesh, name, type, value)
     boundary = mesh.boundaries[bound_id]
     boundary.type = type
     boundary.value = value
+end
+
+function get_cell_area(mesh, cell_id)
+    cell = mesh.cells[cell_id]
+    point1 = mesh.nodes[cell.nodes[1]].position
+    point2 = mesh.nodes[cell.nodes[2]].position
+    point3 = mesh.nodes[cell.nodes[3]].position
+    dist1 = point2 - point1
+    dist2 = point3 - point1
+    cross_prod = cross(dist1, dist2)
+
+    return 0.5 * norm(cross_prod)
 end
 
 function read_Gmsh_file(file_name)
