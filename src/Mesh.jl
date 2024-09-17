@@ -3,7 +3,7 @@
 mutable struct Boundary
     type::BoundaryType
     value
-    Boundary() = new(DIRICHLET, 0.0)
+    Boundary() = new(DIRICHLET, 1.0)
 end
 
 mutable struct Surface

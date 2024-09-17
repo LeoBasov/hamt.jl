@@ -63,7 +63,20 @@ function convert_center!(matrix, vector, mesh, node_id)
 end
 
 function conver_boundaries!(matrix, vector, mesh, node_id)
-    #TODO
-    matrix[node_id, node_id] = 1.0
-    vector[node_id] = 1.0
+    node = mesh.nodes[node_id]
+    boundary1 = mesh.boundaries[node.boundaries[1]]
+    boundary2 = mesh.boundaries[node.boundaries[2]]
+
+    if boundary1.type == DIRICHLET && boundary2.type == DIRICHLET
+        matrix[node_id, node_id] = 1.0
+        vector[node_id] = 0.5 * (boundary1.value + boundary2.value)
+    elseif boundary1.type == DIRICHLET
+        matrix[node_id, node_id] = 1.0
+        vector[node_id] = boundary1.value
+    elseif boundary2.type == DIRICHLET
+        matrix[node_id, node_id] = 1.0
+        vector[node_id] = boundary2.value
+    else
+        error("undefined boundary type")
+    end
 end
