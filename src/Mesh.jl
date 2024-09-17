@@ -41,8 +41,9 @@ mutable struct Mesh
 
     boundary_names::Dict{String, Int}
     surface_names::Dict{String, Int}
+    boundary_ids::Dict{Int, Int}
 
-    Mesh() = new([], [], [], [], Dict(), Dict())
+    Mesh() = new([], [], [], [], Dict(), Dict(), Dict())
 end
 
 function set_boundary!(mesh, name, type, value)
@@ -93,6 +94,7 @@ function setup_physical_properties!(mesh, gmsh_file)
 
             name_str = rstrip(lstrip(name[3], '"'), '"')
             mesh.boundary_names[name_str] = length(mesh.boundaries)
+            mesh.boundary_ids[parse(Int, name[2])] = length(mesh.boundaries)
         elseif length(name) == 3 && name[1] == "2"
             surface = Surface()
             push!(mesh.surfaces, surface)
@@ -135,11 +137,14 @@ function setup_cells_and_nodes!(mesh, gmsh_file)
                 items = findall(x -> x == parse(Int, element[6]) || x == parse(Int,element[7]), cell.nodes)
                 if length(items) == 2
                     if items[1] == 1 && items[2] == 2
-                        cell.boundaries[1] = parse(Int, element[4])
+                        id = parse(Int, element[4])
+                        cell.boundaries[1] = mesh.boundary_ids[id]
                     elseif items[1] == 2 && items[2] == 3
-                        cell.boundaries[2] = parse(Int, element[4])
+                        id = parse(Int, element[4])
+                        cell.boundaries[2] = mesh.boundary_ids[id]
                     elseif items[1] == 1 && items[2] == 3
-                        cell.boundaries[3] = parse(Int, element[4])
+                        id = parse(Int, element[4])
+                        cell.boundaries[3] = mesh.boundary_ids[id]
                     else
                         error("unacceptrable combination of cell indices")
                     end
