@@ -140,9 +140,17 @@ end
 	@test matrix[3, 3] == 1.0
 	@test matrix[4, 4] == 1.0
 
+	#TODO: update tests
 	@test matrix[5, 1] == -1.0
 	@test matrix[5, 2] == -1.0
 	@test matrix[5, 3] == -1.0
 	@test matrix[5, 4] == -1.0
 	@test matrix[5, 5] == 4.0
+
+	#TODO: update tests
+	@test solution[1] == 1.0
+	@test solution[2] == 1.0
+	@test solution[3] == 1.0
+	@test solution[4] == 1.0
+	@test solution[5] == 1.0
 end
