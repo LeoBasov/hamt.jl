@@ -63,7 +63,12 @@ end
 function set_surface_property!(mesh, name, type, value)
     surf_id = mesh.surface_names[name]
     surface = mesh.surfaces[surf_id]
-    surface.properties[type] = value
+
+    if type in keys(surface.properties)
+        surface.properties[type] = value
+    else
+        throw(ErrorException("type [" * type * "] is not a surface property"))
+    end
 end
 
 function get_cell_area(mesh, cell_id)
