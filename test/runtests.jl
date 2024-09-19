@@ -81,6 +81,12 @@ function test_convert_Gmsh2_to_Mesh()
 	@test mesh.nodes[5].adjacent_nodes[2] == 2
 	@test mesh.nodes[5].adjacent_nodes[3] == 3
 	@test mesh.nodes[5].adjacent_nodes[4] == 4
+
+	@test length(mesh.nodes[1].boundaries) == 2
+	@test length(mesh.nodes[2].boundaries) == 2
+	@test length(mesh.nodes[3].boundaries) == 2
+	@test length(mesh.nodes[4].boundaries) == 2
+	@test length(mesh.nodes[5].boundaries) == 0
 end
 
 function test_ntr_mesh()
@@ -109,4 +115,67 @@ end
 	test_read_Gmsh_file()
 	test_convert_Gmsh2_to_Mesh()
 	test_ntr_mesh()
+end
+
+function simple_triangular_solver_test()
+	gmsh_file = HAMT.read_Gmsh_file("test_data/block_single_triangular.msh")
+	mesh = HAMT.convert_Gmsh2_to_Mesh(gmsh_file)
+	matrix, vector = HAMT.convert_triangular_mesh(mesh)
+	solution = HAMT.solve_heat_equation(mesh)
+
+	@test size(matrix) === (length(mesh.nodes), length(mesh.nodes))
+	@test length(vector) == length(mesh.nodes)
+	@test length(solution) == length(mesh.nodes)
+	
+	#TODO: update tests
+	@test vector[1] == 1.0
+	@test vector[2] == 1.0
+	@test vector[3] == 1.0
+	@test vector[4] == 1.0
+	@test vector[5] == 0.0
+
+	#TODO: update tests
+	@test matrix[1, 1] == 1.0
+	@test matrix[2, 2] == 1.0
+	@test matrix[3, 3] == 1.0
+	@test matrix[4, 4] == 1.0
+
+	#TODO: update tests
+	@test matrix[5, 1] == -1.0
+	@test matrix[5, 2] == -1.0
+	@test matrix[5, 3] == -1.0
+	@test matrix[5, 4] == -1.0
+	@test matrix[5, 5] == 4.0
+
+	#TODO: update tests
+	@test solution[1] == 1.0
+	@test solution[2] == 1.0
+	@test solution[3] == 1.0
+	@test solution[4] == 1.0
+	@test solution[5] == 1.0
+end
+
+function set_boundary_test()
+	gmsh_file = HAMT.read_Gmsh_file("test_data/block_single_triangular.msh")
+	mesh = HAMT.convert_Gmsh2_to_Mesh(gmsh_file)
+	HAMT.set_boundary!(mesh, "top", HAMT.DIRICHLET, 3.0)
+	matrix, vector = HAMT.convert_triangular_mesh(mesh)
+	solution = HAMT.solve_heat_equation(mesh)
+
+	@test vector[1] == 1.0
+	@test vector[2] == 1.0
+	@test vector[3] == 2.0
+	@test vector[4] == 2.0
+	@test vector[5] == 0.0
+
+	@test solution[1] == 1.0
+	@test solution[2] == 1.0
+	@test solution[3] == 2.0
+	@test solution[4] == 2.0
+	@test solution[5] == 1.5
+end
+
+@testset "Solver.jl" begin
+	simple_triangular_solver_test()
+	set_boundary_test()
 end
