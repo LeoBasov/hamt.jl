@@ -41,14 +41,18 @@ end
 function execute()
     global mesh
     global solution
+    println("started excution")
     solution = solve_heat_equation(mesh)
+    println("finished excution")
     return nothing
 end
 
 function export_solution(file_name)
     global mesh
     global solution
+    println("started export")
     write_mesh(file_name, mesh, solution)
+    println("finished export")
     return nothing
 end
 
