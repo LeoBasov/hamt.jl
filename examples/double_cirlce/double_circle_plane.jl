@@ -1,6 +1,6 @@
 using HAMT
 
-read_mesh("examples/double_cirlce/double_cirlce_plane.msh")
+read_mesh("examples/double_cirlce/double_cirlce_plane_fine.msh")
 
 set_boundary("left", NEUMANN, 0.0)
 set_boundary("right", NEUMANN, 0.0)
