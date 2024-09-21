@@ -17,8 +17,9 @@ solution::Vector{Float64} = []
 
 function read_mesh(file_name)
     gmsh_file = read_Gmsh_file(file_name)
+    println("started reading mesh")
     global mesh = convert_Gmsh2_to_Mesh(gmsh_file)
-    print("mesh\n")
+    println("finished reading mesh")
     print("N nodes: " * string(length(mesh.nodes)) * "\n")
     print("N cells: " * string(length(mesh.cells)) * "\n")
     return nothing
