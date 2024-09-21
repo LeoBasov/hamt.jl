@@ -1,6 +1,6 @@
 using HAMT
 
-read_mesh("examples/double_cirlce/double_cirlce.msh")
+read_mesh("examples/double_cirlce/double_cirlce_fine.msh")
 
 set_boundary("boundary", DIRICHLET, 300.0)
 
