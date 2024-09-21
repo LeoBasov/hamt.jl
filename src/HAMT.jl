@@ -7,6 +7,7 @@ export execute
 export export_solution
 
 export DIRICHLET, NEUMANN, RADIATION, HEAT_FLUX
+export CARTESIAN, CYLINDER
 
 include("Mesh.jl")
 include("Writer.jl")
@@ -39,11 +40,11 @@ function set_surface(name, type, value)
     return nothing
 end
 
-function execute()
+function execute(coord_system::CoordSystem = CARTESIAN)
     global mesh
     global solution
     println("started excution")
-    solution = solve_heat_equation(mesh)
+    solution = solve_heat_equation(mesh, coord_system)
     println("finished excution")
     return nothing
 end

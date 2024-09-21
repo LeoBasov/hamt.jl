@@ -1,14 +1,16 @@
 using LinearSolve
 using LinearAlgebra
 
-function solve_heat_equation(mesh)
-    matrix, vector = convert_triangular_mesh(mesh)
+@enum CoordSystem CARTESIAN=1 CYLINDER=2
+
+function solve_heat_equation(mesh, coord_system::CoordSystem)
+    matrix, vector = convert_triangular_mesh(mesh, coord_system)
     problem = LinearProblem(matrix, vector)
     sol = solve(problem)
     return sol.u
 end
 
-function convert_triangular_mesh(mesh)
+function convert_triangular_mesh(mesh, coord_system::CoordSystem)
     matrix::Matrix{Float64} = zeros(length(mesh.nodes), length(mesh.nodes))
     vector::Vector{Float64} = zeros(length(mesh.nodes))
 
@@ -16,14 +18,14 @@ function convert_triangular_mesh(mesh)
         if length(mesh.nodes[node_id].boundaries) > 0
             conver_boundaries!(matrix, vector, mesh, node_id)
         else
-            convert_center!(matrix, vector, mesh, node_id)
+            convert_center!(matrix, vector, mesh, node_id, coord_system)
         end
     end
 
     return matrix, vector
 end
 
-function convert_center!(matrix, vector, mesh, node_id)
+function convert_center!(matrix, vector, mesh, node_id, coord_system::CoordSystem)
     node = mesh.nodes[node_id]
 
     for cell_id in node.adjacent_cells
@@ -55,11 +57,24 @@ function convert_center!(matrix, vector, mesh, node_id)
 
         surface_br = mesh.surfaces[cell.surface_id]
 
-        matrix[node_id, node_id] += (phi_ii_x + phi_ii_y) * surface_br.properties["thermal_conductivity"]
-        matrix[node_id, node_id_im] += (phi_im_x + phi_im_y) * surface_br.properties["thermal_conductivity"]
-        matrix[node_id, node_id_ip] += (phi_ip_x + phi_ip_y) * surface_br.properties["thermal_conductivity"]
+        if coord_system == CARTESIAN
+            matrix[node_id, node_id] += (phi_ii_x + phi_ii_y) * surface_br.properties["thermal_conductivity"]
+            matrix[node_id, node_id_im] += (phi_im_x + phi_im_y) * surface_br.properties["thermal_conductivity"]
+            matrix[node_id, node_id_ip] += (phi_ip_x + phi_ip_y) * surface_br.properties["thermal_conductivity"]
 
-        vector[node_id] += (1.0 / 6.0) * surface_br.properties["volumetric_heat_source"] * det_J
+            vector[node_id] += (1.0 / 6.0) * surface_br.properties["volumetric_heat_source"] * det_J
+        elseif coord_system == CYLINDER
+            int_r = (dy10 / 3.0) + (dy20 / 3.0) + node_pos_i[2]
+            int_rb = (dy10 / 24.0) + (dy20 / 24.0) + (node_pos_i[2] / 6.0)
+
+            matrix[node_id, node_id] += int_r * (phi_ii_x + phi_ii_y) * surface_br.properties["thermal_conductivity"]
+            matrix[node_id, node_id_im] += int_r * (phi_im_x + phi_im_y) * surface_br.properties["thermal_conductivity"]
+            matrix[node_id, node_id_ip] += int_r * (phi_ip_x + phi_ip_y) * surface_br.properties["thermal_conductivity"]
+
+            vector[node_id] += int_rb * surface_br.properties["volumetric_heat_source"] * det_J
+        else
+            error("undefined coord system [" * string(coord_system) *"]")
+        end
     end
 end
 

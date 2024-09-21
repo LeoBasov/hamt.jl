@@ -10,6 +10,6 @@ set_boundary("top", DIRICHLET, 300.0)
 
 set_surface("inner", "volumetric_heat_source", 100.0)
 
-execute()
+execute(CYLINDER)
 
 export_solution("double_cirlce_plane")
