@@ -7,6 +7,7 @@ export execute
 export export_solution
 
 export DIRICHLET, NEUMANN, RADIATION, HEAT_FLUX
+export CARTESIAN, CYLINDER
 
 include("Mesh.jl")
 include("Writer.jl")
@@ -17,8 +18,9 @@ solution::Vector{Float64} = []
 
 function read_mesh(file_name)
     gmsh_file = read_Gmsh_file(file_name)
-    global mesh = convert_Gmsh2_to_Mesh(gmsh_file)
-    print("mesh\n")
+    println("started reading mesh")
+    @time global mesh = convert_Gmsh2_to_Mesh(gmsh_file)
+    println("finished reading mesh")
     print("N nodes: " * string(length(mesh.nodes)) * "\n")
     print("N cells: " * string(length(mesh.cells)) * "\n")
     return nothing
@@ -38,17 +40,21 @@ function set_surface(name, type, value)
     return nothing
 end
 
-function execute()
+function execute(coord_system::CoordSystem = CARTESIAN)
     global mesh
     global solution
-    solution = solve_heat_equation(mesh)
+    println("started excution")
+    @time solution = solve_heat_equation(mesh, coord_system)
+    println("finished excution")
     return nothing
 end
 
 function export_solution(file_name)
     global mesh
     global solution
-    write_mesh(file_name, mesh, solution)
+    println("started export")
+    @time write_mesh(file_name, mesh, solution)
+    println("finished export")
     return nothing
 end
 
