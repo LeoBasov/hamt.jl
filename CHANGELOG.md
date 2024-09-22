@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.5.0] - 2024-09-22
+
+- implemented use of cylinder coordinates
+
 ## [0.4.0] - 2024-09-19
 
 - implemented solver module for 2D tringular mesh in cartesian coordinates
