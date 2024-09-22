@@ -19,7 +19,7 @@ solution::Vector{Float64} = []
 function read_mesh(file_name)
     gmsh_file = read_Gmsh_file(file_name)
     println("started reading mesh")
-    global mesh = convert_Gmsh2_to_Mesh(gmsh_file)
+    @time global mesh = convert_Gmsh2_to_Mesh(gmsh_file)
     println("finished reading mesh")
     print("N nodes: " * string(length(mesh.nodes)) * "\n")
     print("N cells: " * string(length(mesh.cells)) * "\n")
@@ -44,7 +44,7 @@ function execute(coord_system::CoordSystem = CARTESIAN)
     global mesh
     global solution
     println("started excution")
-    solution = solve_heat_equation(mesh, coord_system)
+    @time solution = solve_heat_equation(mesh, coord_system)
     println("finished excution")
     return nothing
 end
@@ -53,7 +53,7 @@ function export_solution(file_name)
     global mesh
     global solution
     println("started export")
-    write_mesh(file_name, mesh, solution)
+    @time write_mesh(file_name, mesh, solution)
     println("finished export")
     return nothing
 end
