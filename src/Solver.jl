@@ -3,11 +3,11 @@ using LinearAlgebra
 
 @enum CoordSystem CARTESIAN=1 CYLINDER=2
 
-function solve_heat_equation(mesh, coord_system::CoordSystem)
+function solve_heat_equation!(solution, mesh, coord_system::CoordSystem)
+    resize!(solution, length(mesh.nodes))
     matrix, vector = convert_triangular_mesh(mesh, coord_system)
     problem = LinearProblem(matrix, vector)
-    sol = solve(problem)
-    return sol.u
+    copy!(solution, solve(problem).u)
 end
 
 function convert_triangular_mesh(mesh, coord_system::CoordSystem)

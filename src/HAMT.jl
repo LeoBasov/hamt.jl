@@ -44,7 +44,7 @@ function execute(coord_system::CoordSystem = CARTESIAN)
     global mesh
     global solution
     println("started excution")
-    @time solution = solve_heat_equation(mesh, coord_system)
+    @time solve_heat_equation!(solution, mesh, coord_system)
     println("finished excution")
     return nothing
 end
