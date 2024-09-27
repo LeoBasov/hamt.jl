@@ -177,10 +177,10 @@ function set_radiation_boundary!(matrix, vector, mesh, node_id, solution)
     end
 
     normal ./= norm(normal)
-    a = 4.0 * epsilon * kb * solution[node_id]^3
+    a = 4.0 * epsilon * σ * solution[node_id]^3
 
     matrix[node_id, node_id] -= a
-    vector[node_id] = -3.0 * epsilon * kb * solution[node_id]^4
+    vector[node_id] = -3.0 * epsilon * σ * solution[node_id]^4
 
     for cell_id in node.adjacent_cells
         cell = mesh.cells[cell_id]
