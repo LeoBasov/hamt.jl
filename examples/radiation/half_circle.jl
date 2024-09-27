@@ -10,4 +10,4 @@ set_boundary("mirrow_right", NEUMANN, 0.0)
 
 execute()
 
-export_solution("half_circle")
+export_solution("radiation")
