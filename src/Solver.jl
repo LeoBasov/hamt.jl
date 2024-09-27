@@ -6,7 +6,19 @@ include("constants.jl")
 @enum CoordSystem CARTESIAN=1 CYLINDER=2
 
 function solve_heat_equation!(solution, mesh, coord_system::CoordSystem)
-    resize!(solution, length(mesh.nodes))
+    if length(solution) != length(mesh.nodes)
+        max_val = 1.0
+
+        for boundary in mesh.boundaries
+            if boundary.type == DIRICHLET && boundary.value > max_val
+                max_val = boundary.value
+            end
+        end
+
+        resize!(solution, length(mesh.nodes))
+        fill!(solution, max_val)
+    end
+
     matrix, vector = convert_triangular_mesh(solution, mesh, coord_system)
     problem = LinearProblem(matrix, vector)
     sol = solve(problem)
