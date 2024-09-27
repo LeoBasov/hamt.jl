@@ -5,18 +5,18 @@ using LinearAlgebra
 
 function solve_heat_equation!(solution, mesh, coord_system::CoordSystem)
     resize!(solution, length(mesh.nodes))
-    matrix, vector = convert_triangular_mesh(mesh, coord_system)
+    matrix, vector = convert_triangular_mesh(solution, mesh, coord_system)
     problem = LinearProblem(matrix, vector)
     copy!(solution, solve(problem).u)
 end
 
-function convert_triangular_mesh(mesh, coord_system::CoordSystem)
+function convert_triangular_mesh(solution, mesh, coord_system::CoordSystem)
     matrix::Matrix{Float64} = zeros(length(mesh.nodes), length(mesh.nodes))
     vector::Vector{Float64} = zeros(length(mesh.nodes))
 
     for node_id=1:length(mesh.nodes)
         if length(mesh.nodes[node_id].boundaries) > 0
-            conver_boundaries!(matrix, vector, mesh, node_id)
+            conver_boundaries!(matrix, vector, mesh, node_id, solution)
         else
             convert_center!(matrix, vector, mesh, node_id, coord_system)
         end
@@ -78,7 +78,7 @@ function convert_center!(matrix, vector, mesh, node_id, coord_system::CoordSyste
     end
 end
 
-function conver_boundaries!(matrix, vector, mesh, node_id)
+function conver_boundaries!(matrix, vector, mesh, node_id, solution)
     node = mesh.nodes[node_id]
     boundary1 = mesh.boundaries[node.boundaries[1]]
     boundary2 = mesh.boundaries[node.boundaries[2]]
@@ -94,6 +94,8 @@ function conver_boundaries!(matrix, vector, mesh, node_id)
         vector[node_id] = boundary2.value
     elseif boundary1.type == NEUMANN && boundary2.type == NEUMANN
         set_neumann_boundary!(matrix, vector, mesh, node_id)
+    elseif boundary1.type == RADIATION || boundary2.type == RADIATION
+        set_radiation_boundary!(matrix, vector, mesh, node_id, solution)
     else
         error("undefined boundary type")
     end
@@ -138,4 +140,8 @@ function set_neumann_boundary!(matrix, vector, mesh, node_id)
 
     #TODO (LB): implement correct area dependant average
     vector[node_id] = (boundary1.value + boundary2.value) / 2.0
+end
+
+function set_radiation_boundary!(matrix, vector, mesh, node_id, solution)
+    error("radiation boundary not implemented")
 end
