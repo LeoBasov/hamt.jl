@@ -9,7 +9,11 @@ function solve_heat_equation!(solution, mesh, coord_system::CoordSystem)
     resize!(solution, length(mesh.nodes))
     matrix, vector = convert_triangular_mesh(solution, mesh, coord_system)
     problem = LinearProblem(matrix, vector)
-    copy!(solution, solve(problem).u)
+    sol = solve(problem)
+    error = norm(solution - sol.u)
+    copy!(solution, sol.u)
+
+    return error
 end
 
 function convert_triangular_mesh(solution, mesh, coord_system::CoordSystem)
