@@ -15,6 +15,7 @@ include("Solver.jl")
 
 mesh = Mesh()
 solution::Vector{Float64} = []
+max_error = 1e-12
 
 function read_mesh(file_name)
     gmsh_file = read_Gmsh_file(file_name)
@@ -43,8 +44,21 @@ end
 function execute(coord_system::CoordSystem = CARTESIAN)
     global mesh
     global solution
+    global max_error
+    error = Inf
+    mesh_has_radiation = has_radiation_boundary(mesh)
     println("started excution")
-    @time solution = solve_heat_equation(mesh, coord_system)
+    while error > max_error
+        @time new_error = solve_heat_equation!(solution, mesh, coord_system)
+        if !mesh_has_radiation
+            break
+        elseif new_error >= error
+            println("error " * string(new_error))
+            break
+        end
+        error = new_error
+        println("error " * string(error))
+    end
     println("finished excution")
     return nothing
 end

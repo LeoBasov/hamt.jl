@@ -53,6 +53,15 @@ mutable struct Mesh
     Mesh() = new([], [], [], [], Dict(), Dict(), Dict(), Dict())
 end
 
+function has_radiation_boundary(mesh)
+    for boundary in mesh.boundaries
+        if boundary.type == RADIATION
+            return true
+        end
+    end
+    return false
+end
+
 function set_boundary!(mesh, name, type, value)
     bound_id = mesh.boundary_names[name]
     boundary = mesh.boundaries[bound_id]

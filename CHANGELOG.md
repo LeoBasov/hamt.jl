@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.6.0] - 2024-09-27
+
+- implemented gray body radiation to 0 K background
+
 ## [0.5.0] - 2024-09-22
 
 - implemented use of cylinder coordinates
