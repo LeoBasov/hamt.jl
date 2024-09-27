@@ -167,18 +167,16 @@ function set_radiation_boundary!(matrix, vector, mesh, node_id, solution)
 
     if boundary1.type == RADIATION && boundary2.type == RADIATION
         epsilon = (L_left * boundary1.value + L_right * boundary2.value) / L
-        normal = 0.5 * rot_mat * (node_pos_left - node.position) + 0.5 * rot_mat * (node.position - node_pos_right)
-        normal ./= norm(normal)
+        copy!(normal, 0.5 * rot_mat * (node_pos_left - node.position) + 0.5 * rot_mat * (node.position - node_pos_right))
     elseif boundary1.type == RADIATION
         epsilon = boundary1.value;
-        nomal = rot_mat * (node_pos_left - node.position)
-        normal ./= norm(normal)
+        copy!(normal, rot_mat * (node_pos_left - node.position))
     else
         epsilon = boundary2.value;
-        nomal = rot_mat * (node.position - node_pos_right)
-        normal ./= norm(normal)
+        copy!(normal, rot_mat * (node.position - node_pos_right))
     end
 
+    normal ./= norm(normal)
     a = 4.0 * epsilon * kb * solution[node_id]^3
 
     matrix[node_id, node_id] -= a
