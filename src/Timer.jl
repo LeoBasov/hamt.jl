@@ -25,20 +25,20 @@ end
 function print_timer_evaluation(timer)
     total_time = get_total_time(timer)
 
-    reading_mesh_time = @sprintf("%f10", timer.reading_gmsh.time)
-    pertotal_reading_mesh_time = @sprintf("%7.4f", 100 * timer.reading_gmsh.time / total_time)
+    reading_mesh_time = get_stime(timer.reading_gmsh.time)
+    pertotal_reading_mesh_time = get_pertotal_stime(timer.reading_gmsh.time, total_time)
 
-    converting_mesh_time = @sprintf("%f10", timer.converting_mesh.time)
-    pertotal_converting_mesh_time = @sprintf("%7.4f", 100 * timer.converting_mesh.time / total_time)
+    converting_mesh_time = get_stime(timer.converting_mesh.time)
+    pertotal_converting_mesh_time = get_pertotal_stime(timer.converting_mesh.time, total_time)
 
-    exportingh_time = @sprintf("%f10", timer.exporting.time)
-    pertotal_exporting_time = @sprintf("%7.4f", 100 * timer.exporting.time / total_time)
+    exportingh_time = get_stime(timer.exporting.time)
+    pertotal_exporting_time = get_pertotal_stime(timer.exporting.time, total_time)
 
-    min_executing_time = @sprintf("%f10", minimum([timer.executing[i].time for i in eachindex(timer.executing)]))
-    ave_executing_time = @sprintf("%f10", sum([timer.executing[i].time for i in eachindex(timer.executing)]) / length(timer.executing))
-    max_executing_time = @sprintf("%f10", maximum([timer.executing[i].time for i in eachindex(timer.executing)]))
+    min_executing_time = get_stime(minimum([timer.executing[i].time for i in eachindex(timer.executing)]))
+    ave_executing_time = get_stime(sum([timer.executing[i].time for i in eachindex(timer.executing)]) / length(timer.executing))
+    max_executing_time = get_stime(maximum([timer.executing[i].time for i in eachindex(timer.executing)]))
 
-    pertotal_executing_time = @sprintf("%7.4f", 100 * sum([timer.executing[i].time for i in eachindex(timer.executing)]) / total_time)
+    pertotal_executing_time = get_pertotal_stime(sum([timer.executing[i].time for i in eachindex(timer.executing)]), total_time)
 
     println("\nMPI task timing breakdown:")
     println("Section         |  min time  |  avg time  |  max time  |%varavg| %total")
@@ -49,4 +49,12 @@ function print_timer_evaluation(timer)
     println("execution       | " * min_executing_time * " | " * ave_executing_time * " | " * max_executing_time * " |-------| " * pertotal_executing_time)
     println("exporting       | " * exportingh_time * " | " * exportingh_time * " | " * exportingh_time * " |-------| " * pertotal_exporting_time)
     println("-----------------------------------------------------------------------")
+end
+
+function get_stime(time)
+    @sprintf("%10.6f", time)
+end
+
+function get_pertotal_stime(time, total_time)
+    @sprintf("%7.4f", 100 * time / total_time)
 end
