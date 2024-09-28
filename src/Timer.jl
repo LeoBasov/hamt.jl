@@ -11,8 +11,15 @@ end
 
 function print_stats(name, stats)
     println(name * " stats")
-    println("   elapsed time (s): " * string(stats.time))
-    println("   bytes allocated:  " * string(stats.bytes))
+    println("   elapsed time (s):      " * @sprintf("%10.6f", stats.time))
+
+    mermory = stats.bytes / 1048576.0
+    
+    if mermory < 1000.0
+        println("   memory allocated (MB): " * @sprintf("%10.6f", mermory))
+    else
+        println("   memory allocated (GB): " * @sprintf("%10.6f", mermory / 1024.0))
+    end
 end
 
 function get_total_time(timer)
