@@ -16,12 +16,20 @@ include("Solver.jl")
 mesh = Mesh()
 solution::Vector{Float64} = []
 max_error = 1e-12
+initial_temp = 300.0
 
 function read_mesh(file_name)
-    gmsh_file = read_Gmsh_file(file_name)
+    global mesh
+    global solution
+    global initial_temp
     println("started reading mesh")
-    @time global mesh = convert_Gmsh2_to_Mesh(gmsh_file)
-    println("finished reading mesh")
+    @time gmsh_file = read_Gmsh_file(file_name)
+    println("started reading mesh")
+    println("started converting mesh")
+    @time mesh = convert_Gmsh2_to_Mesh(gmsh_file)
+    resize!(solution, length(mesh.nodes))
+    fill!(solution, initial_temp)
+    println("finished converting mesh")
     print("N nodes: " * string(length(mesh.nodes)) * "\n")
     print("N cells: " * string(length(mesh.cells)) * "\n")
     return nothing
