@@ -25,14 +25,14 @@ function read_mesh(file_name)
     global solution
     global initial_temp
     println("reading and converting mesh")
-    reading_gmsh = @timed read_Gmsh_file(file_name)
-    converting_mesh = @timed mesh = convert_Gmsh2_to_Mesh(reading_gmsh.value)
+    timer.reading_gmsh = @timed read_Gmsh_file(file_name)
+    timer.converting_mesh = @timed mesh = convert_Gmsh2_to_Mesh(timer.reading_gmsh.value)
     resize!(solution, length(mesh.nodes))
     fill!(solution, initial_temp)
     print("N nodes: " * string(length(mesh.nodes)) * "\n")
     print("N cells: " * string(length(mesh.cells)) * "\n")
-    print_stats("reading gmsh", reading_gmsh)
-    print_stats("converting gmsh", converting_mesh)
+    print_stats("reading gmsh", timer.reading_gmsh)
+    print_stats("converting gmsh", timer.converting_mesh)
     return nothing
 end
 
@@ -55,19 +55,20 @@ function execute(coord_system::CoordSystem = CARTESIAN)
     global solution
     global max_error
     error = Inf
+    new_error = 0.0
     mesh_has_radiation = has_radiation_boundary(mesh)
     println("excuting")
     while error > max_error
-        stats = @timed solve_heat_equation!(solution, mesh, coord_system)
-        print_stats("execution", stats)
+        push!(timer.executing, @timed new_error = solve_heat_equation!(solution, mesh, coord_system))
+        print_stats("execution", timer.executing[end])
         if !mesh_has_radiation
             break
-        elseif stats.value >= error
-            println("error " * string(stats.value))
+        elseif new_error >= error
+            println("error " * string(new_error))
             break
         end
-        error = stats.value
-        println("error " * string(error))
+        error = new_error
+        println("error " * string(new_error))
     end
     return nothing
 end
@@ -76,8 +77,8 @@ function export_solution(file_name)
     global mesh
     global solution
     println("exporting")
-    stats = @timed write_mesh(file_name, mesh, solution)
-    print_stats("export", stats)
+    timer.exporting = @timed write_mesh(file_name, mesh, solution)
+    print_stats("export", timer.exporting)
     return nothing
 end
 

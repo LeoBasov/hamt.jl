@@ -1,10 +1,10 @@
 mutable struct Timer
-    reading_gmsh::Float64
-    reading_mesh::Float64
-    executing::Float64
-    exporting::Float64
+    reading_gmsh
+    converting_mesh
+    executing::Vector
+    exporting
 
-    Timer() = new(0.0, 0.0, 0.0, 0.0)
+    Timer() = new(0.0, 0.0, [], 0.0)
 end
 
 function print_stats(name, stats)
