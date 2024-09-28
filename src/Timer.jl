@@ -49,6 +49,8 @@ function print_timer_evaluation(timer)
     println("execution       | " * min_executing_time * " | " * ave_executing_time * " | " * max_executing_time * " |-------| " * pertotal_executing_time)
     println("exporting       | " * exportingh_time * " | " * exportingh_time * " | " * exportingh_time * " |-------| " * pertotal_exporting_time)
     println("-----------------------------------------------------------------------")
+    println("total wall time (s): " * @sprintf("%.6f", total_time))
+    println("=======================================================================")
 end
 
 function get_stime(time)
