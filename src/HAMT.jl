@@ -5,6 +5,7 @@ export set_boundary
 export set_surface
 export execute
 export export_solution
+export finish_solver
 
 export DIRICHLET, NEUMANN, RADIATION, HEAT_FLUX
 export CARTESIAN, CYLINDER
@@ -80,6 +81,11 @@ function export_solution(file_name)
     timer.exporting = @timed write_mesh(file_name, mesh, solution)
     print_stats("export", timer.exporting)
     return nothing
+end
+
+function finish_solver()
+    global Timer
+    print_timer_evaluation(timer)
 end
 
 end # module HAMT

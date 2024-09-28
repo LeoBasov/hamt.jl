@@ -1,6 +1,6 @@
 using HAMT
 
-read_mesh("examples/surface_radiation/object.msh")
+read_mesh("examples/surface_radiation/object_very_fine.msh")
 
 set_boundary("left", DIRICHLET, 1000.0)
 set_boundary("top", RADIATION, 1.0)
@@ -12,3 +12,5 @@ set_boundary("angle_down", RADIATION, 1.0)
 execute()
 
 export_solution("surface_rad")
+
+finish_solver()
