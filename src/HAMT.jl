@@ -65,11 +65,11 @@ function execute(coord_system::CoordSystem = CARTESIAN)
         if !mesh_has_radiation
             break
         elseif new_error >= error
-            println("error " * string(new_error))
+            println("   error " * string(new_error))
             break
         end
         error = new_error
-        println("error " * string(new_error))
+        println("   error " * string(new_error))
     end
     return nothing
 end
