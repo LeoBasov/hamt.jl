@@ -120,7 +120,8 @@ end
 function simple_triangular_solver_test()
 	gmsh_file = HAMT.read_Gmsh_file("test_data/block_single_triangular.msh")
 	mesh = HAMT.convert_Gmsh2_to_Mesh(gmsh_file)
-	solution::Vector{Float64} = []
+	solution::Vector{Float64} =  []
+	resize!(solution, length(mesh.nodes))
 	matrix, vector = HAMT.convert_triangular_mesh(solution, mesh, CARTESIAN)
 	HAMT.solve_heat_equation!(solution, mesh, CARTESIAN)
 
@@ -161,6 +162,7 @@ function set_boundary_test()
 	mesh = HAMT.convert_Gmsh2_to_Mesh(gmsh_file)
 	HAMT.set_boundary!(mesh, "top", HAMT.DIRICHLET, 3.0)
 	solution::Vector{Float64} = []
+	resize!(solution, length(mesh.nodes))
 	matrix, vector = HAMT.convert_triangular_mesh(solution, mesh, CARTESIAN)
 	HAMT.solve_heat_equation!(solution, mesh, CARTESIAN)
 
