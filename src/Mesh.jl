@@ -32,7 +32,7 @@ end
 
 mutable struct Side
     boundary::Int
-    seen_sides::Vector{Int} # relevant for radiation modeling
+    seen_sides::Vector{Tuple} # relevant for radiation modeling
     normal::Vector{Float64}
 
     Side() = new(-1, [], zeros(3))
@@ -314,20 +314,24 @@ function connect_LineOfSite_cells!(mesh)
 end
 
 function find_LOS_cells!(mesh, cell_id, side_id)
-    rot_mat::Matrix{Float64} = zeros(3, 3)
-
-    rot_mat[1, 2] = 1.0;
-    rot_mat[2, 1] = -1.0;
-    rot_mat[3, 3] = 1.0;
-
     cell = mesh.cells[cell_id]
     for other_cell_id in eachindex(mesh.cells)
         other_cell = mesh.cells[other_cell_id]
         if cell_id != other_cell_id && is_surface_cell(other_cell)
-            node_id1 = cell.nodes[side_id]
-            node_id2 = cell.nodes[side_id == 3 ? 1 : side_id + 1]
-            mid_point = 0.5*(mesh.nodes[node_id1].position + mesh.nodes[node_id2].position)
-            line = other_cell.barycentre - mid_point
+            sides = []
+            for i in 1:3
+                if dot(cell.sides[i].normal, other_cell.sides[i].normal) < 0.0
+                    push!(sides, i)
+                end
+            end
+
+            if length(sides) > 0
+                push!(cell.sides[side_id].seen_sides, (other_cell, sides))
+            end
+            #node_id1 = cell.nodes[side_id]
+            #node_id2 = cell.nodes[side_id == 3 ? 1 : side_id + 1]
+            #mid_point = 0.5*(mesh.nodes[node_id1].position + mesh.nodes[node_id2].position)
+            #line = other_cell.barycentre - mid_point
 
             #TODO if dot(normal side, normal side2) < 0 && if lline intersect side
                 # chek if line intersects oder cells
