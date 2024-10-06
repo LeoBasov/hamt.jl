@@ -329,7 +329,7 @@ function find_LOS_cells!(mesh, cell_id, side_id)
             mid_point = 0.5*(mesh.nodes[node_id1].position + mesh.nodes[node_id2].position)
             line = other_cell.barycentre - mid_point
 
-            # if dot(normal side, normal side2) < 0 && if lline intersect side
+            #TODO if dot(normal side, normal side2) < 0 && if lline intersect side
                 # chek if line intersects oder cells
         end
     end
