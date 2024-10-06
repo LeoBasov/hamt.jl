@@ -30,13 +30,24 @@ mutable struct Node
     Node() = new([], [], [], [])
 end
 
+mutable struct Side
+    boundary::Int
+    seen_sides::Vector{Int} # relevant for radiation modeling
+
+    Side() = new(-1, [])
+end
+
 mutable struct Cell
     barycentre::Vector{Float64}
     nodes::Vector{Int}
-    boundaries::Vector{Int}
+    sides::Vector{Side}
     surface_id::Int
 
-    Cell() = new([0.0, 0.0, 0.0], [-1, -1, -1], [-1, -1, -1], -1)
+    Cell() = new([0.0, 0.0, 0.0], [-1, -1, -1], [Side(), Side(), Side()], -1)
+end
+
+function is_surface_cell(cell::Cell)
+    sum([side.boundary for side in cell.sides]) > -1
 end
 
 mutable struct Mesh
@@ -179,13 +190,13 @@ function setup_cells_and_nodes!(mesh, gmsh_file)
                 if length(items) == 2
                     if items[1] == 1 && items[2] == 2
                         id = parse(Int, element[4])
-                        cell.boundaries[1] = mesh.boundary_ids[id]
+                        cell.sides[1].boundary = mesh.boundary_ids[id] 
                     elseif items[1] == 2 && items[2] == 3
                         id = parse(Int, element[4])
-                        cell.boundaries[2] = mesh.boundary_ids[id]
+                        cell.sides[2].boundary = mesh.boundary_ids[id] 
                     elseif items[1] == 1 && items[2] == 3
                         id = parse(Int, element[4])
-                        cell.boundaries[3] = mesh.boundary_ids[id]
+                        cell.sides[3].boundary = mesh.boundary_ids[id] 
                     else
                         error("unacceptrable combination of cell indices")
                     end
@@ -209,7 +220,7 @@ function connect_mesh!(mesh)
         for c=1:length(node.adjacent_cells)
             cell = mesh.cells[node.adjacent_cells[c]]
             pos = findall(x -> x == n, cell.nodes)[begin]
-            if sum(cell.boundaries) > -3 && cell.boundaries[pos] > -1
+            if cell.sides[pos].boundary > -1
                 c_old = node.adjacent_cells[1]
                 node.adjacent_cells[1] = node.adjacent_cells[c]
                 node.adjacent_cells[c] = c_old
@@ -260,11 +271,11 @@ function connect_mesh!(mesh)
             cell = mesh.cells[c]
             pos1 = findall(x -> x == n, cell.nodes)[1]
             pos2 = pos1 == 1 ? 3 : pos1 - 1
-            if cell.boundaries[pos1] > -1
-                push!(node.boundaries, cell.boundaries[pos1])
+            if cell.sides[pos1].boundary > -1
+                push!(node.boundaries, cell.sides[pos1].boundary)
             end
-            if cell.boundaries[pos2] > -1
-                push!(node.boundaries, cell.boundaries[pos2])
+            if cell.sides[pos2].boundary > -1
+                push!(node.boundaries, cell.sides[pos2].boundary)
             end
         end
     end

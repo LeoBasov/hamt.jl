@@ -38,27 +38,27 @@ function test_convert_Gmsh2_to_Mesh()
 
 	@test mesh.cells[1].nodes[1] == 2
 	@test mesh.cells[1].nodes[2] == 5
-	@test mesh.cells[1].boundaries[1] == -1
-	@test mesh.cells[1].boundaries[2] == -1
-	@test mesh.cells[1].boundaries[3] == 1
+	@test mesh.cells[1].sides[1].boundary == -1
+	@test mesh.cells[1].sides[2].boundary == -1
+	@test mesh.cells[1].sides[3].boundary == 1
 
 	@test mesh.cells[2].nodes[1] == 1
 	@test mesh.cells[2].nodes[2] == 5
-	@test mesh.cells[2].boundaries[1] == -1
-	@test mesh.cells[2].boundaries[2] == -1
-	@test mesh.cells[2].boundaries[3] == 4
+	@test mesh.cells[2].sides[1].boundary == -1
+	@test mesh.cells[2].sides[2].boundary == -1
+	@test mesh.cells[2].sides[3].boundary == 4
 
 	@test mesh.cells[3].nodes[1] == 3
 	@test mesh.cells[3].nodes[2] == 5
-	@test mesh.cells[3].boundaries[1] == -1
-	@test mesh.cells[3].boundaries[2] == -1
-	@test mesh.cells[3].boundaries[3] == 2
+	@test mesh.cells[3].sides[1].boundary == -1
+	@test mesh.cells[3].sides[2].boundary == -1
+	@test mesh.cells[3].sides[3].boundary == 2
 
 	@test mesh.cells[4].nodes[1] == 4
 	@test mesh.cells[4].nodes[2] == 5
-	@test mesh.cells[4].boundaries[1] == -1
-	@test mesh.cells[4].boundaries[2] == -1
-	@test mesh.cells[4].boundaries[3] == 3
+	@test mesh.cells[4].sides[1].boundary == -1
+	@test mesh.cells[4].sides[2].boundary == -1
+	@test mesh.cells[4].sides[3].boundary == 3
 
 	@test length(mesh.nodes[1].adjacent_cells) == 2
 	@test length(mesh.nodes[2].adjacent_cells) == 2
@@ -109,6 +109,9 @@ function test_ntr_mesh()
 	@test mesh.nodes[2].adjacent_nodes[5] == 38
 	@test mesh.nodes[2].adjacent_nodes[6] == 375
 	@test mesh.nodes[2].adjacent_nodes[7] == 37
+
+	@test HAMT.is_surface_cell(mesh.cells[898]) == true
+	@test HAMT.is_surface_cell(mesh.cells[1960]) == false
 end
 
 @testset "Mesh.jl" begin
