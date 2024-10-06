@@ -74,11 +74,11 @@ function execute(coord_system::CoordSystem = CARTESIAN)
     return nothing
 end
 
-function export_solution(file_name)
+function export_solution(file_name::String; surface::Bool = false)
     global mesh
     global solution
     println("exporting")
-    timer.exporting = @timed write_mesh(file_name, mesh, solution)
+    timer.exporting = @timed write_mesh(file_name, mesh, solution, surface)
     print_stats("export", timer.exporting)
     return nothing
 end
