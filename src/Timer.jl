@@ -3,10 +3,11 @@ using Printf
 mutable struct Timer
     reading_gmsh
     converting_mesh
+    connecting_LOS_cells
     executing::Vector
     exporting
 
-    Timer() = new(0.0, 0.0, [], 0.0)
+    Timer() = new(0.0, 0.0, 0.0, [], 0.0)
 end
 
 function print_stats(name, stats)
@@ -25,6 +26,7 @@ end
 function get_total_time(timer)
     total_time = timer.reading_gmsh.time
     total_time += timer.converting_mesh.time
+    total_time += timer.connecting_LOS_cells.time
     total_time += sum([timer.executing[i].time for i in eachindex(timer.executing)])
     total_time += timer.exporting.time
 end
@@ -41,6 +43,9 @@ function print_timer_evaluation(timer)
     exportingh_time = get_stime(timer.exporting.time)
     pertotal_exporting_time = get_pertotal_stime(timer.exporting.time, total_time)
 
+    connecting_LOS_cells_time = get_stime(timer.connecting_LOS_cells.time)
+    pertotal_connecting_LOS_cells_time = get_pertotal_stime(timer.connecting_LOS_cells.time, total_time)
+
     min_executing_time = get_stime(minimum([timer.executing[i].time for i in eachindex(timer.executing)]))
     ave_executing_time = get_stime(sum([timer.executing[i].time for i in eachindex(timer.executing)]) / length(timer.executing))
     max_executing_time = get_stime(maximum([timer.executing[i].time for i in eachindex(timer.executing)]))
@@ -52,7 +57,7 @@ function print_timer_evaluation(timer)
     println("-----------------------------------------------------------------------")
     println("reading gmsh    | " * reading_mesh_time * " | " * reading_mesh_time * " | " * reading_mesh_time * " |-------| " * pertotal_reading_mesh_time)
     println("converting mesh | " * converting_mesh_time * " | " * converting_mesh_time * " | " * converting_mesh_time * " |-------| " * pertotal_converting_mesh_time)
-    println("assinging BCs   | ToDo")
+    println("connecting LOS  | " * connecting_LOS_cells_time * " | " * connecting_LOS_cells_time * " | " * connecting_LOS_cells_time * " |-------| " * pertotal_connecting_LOS_cells_time)
     println("execution       | " * min_executing_time * " | " * ave_executing_time * " | " * max_executing_time * " |-------| " * pertotal_executing_time)
     println("exporting       | " * exportingh_time * " | " * exportingh_time * " | " * exportingh_time * " |-------| " * pertotal_exporting_time)
     println("-----------------------------------------------------------------------")
