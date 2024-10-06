@@ -28,10 +28,14 @@ function write_mesh(file_name, mesh, solution, surface)
     lines::Vector{MeshCell{PolyData.Lines}} = []
 
     for cell in mesh.cells
-        for i in 1:3
-            if cell.boundaries[i] > -1
-                p = i == 3 ? 1 : i + 1
-                push!(lines, MeshCell(PolyData.Lines(), (cell.nodes[i],cell.nodes[p])))
+        for i in 1:3            
+            for seen_side in cell.sides[i].seen_sides
+                other_cell = mesh.cells[seen_side[1]]
+
+                for side in seen_side[2]
+                    p = side == 3 ? 1 : side + 1
+                    push!(lines, MeshCell(PolyData.Lines(), (other_cell.nodes[side], other_cell.nodes[p])))
+                end
             end
         end
     end

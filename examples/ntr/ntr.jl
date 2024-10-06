@@ -15,6 +15,6 @@ set_boundary("keeper_left", RADIATION, 1.0)
 
 execute(CYLINDER)
 
-export_solution("ntr")
+export_solution("ntr", surface=true)
 
 finish_solver()
