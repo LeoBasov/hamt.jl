@@ -280,3 +280,7 @@ function connect_mesh!(mesh)
         end
     end
 end
+
+function connect_LineOfSite_cells!(mesh)
+    #TODO
+end
