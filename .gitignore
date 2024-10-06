@@ -25,3 +25,4 @@ Manifest.toml
 
 # Files created for vtk output
 *.vtu
+*.vtp
