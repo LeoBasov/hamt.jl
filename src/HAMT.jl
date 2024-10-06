@@ -58,6 +58,13 @@ function execute(coord_system::CoordSystem = CARTESIAN)
     error = Inf
     new_error = 0.0
     mesh_has_radiation = has_radiation_boundary(mesh)
+
+    if mesh_has_radiation
+        println("connecting LOS cells")
+        timer.connecting_LOS_cells = @timed connect_LineOfSite_cells!(mesh)
+        print_stats("connecting LOS cells", timer.connecting_LOS_cells)
+    end
+
     println("excuting")
     while error > max_error
         push!(timer.executing, @timed new_error = solve_heat_equation!(solution, mesh, coord_system))
