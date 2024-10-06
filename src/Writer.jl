@@ -19,4 +19,20 @@ function write_mesh(file_name, mesh, solution)
     vtk_grid(file_name, points, cells) do vtk
         vtk["temperature", VTKPointData()] = sol
     end
+
+    # lines stuff
+    lines::Vector{MeshCell{PolyData.Lines}} = []
+
+    for cell in mesh.cells
+        for i in 1:3
+            if cell.boundaries[i] > -1
+                p = i == 3 ? 1 : i + 1
+                push!(lines, MeshCell(PolyData.Lines(), (cell.nodes[i],cell.nodes[p])))
+            end
+        end
+    end
+
+    vtk_grid(file_name * "_surf", points, lines) do vtk
+    #    vtk["temperature", VTKPointData()] = sol
+    end
 end
