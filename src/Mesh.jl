@@ -293,9 +293,13 @@ function connect_mesh!(mesh)
         nodepos2 = mesh.nodes[cell.nodes[2]].position
         nodepos3 = mesh.nodes[cell.nodes[3]].position
 
-        cell.sides[1].normal =  rot_mat * (nodepos1 - nodepos2)
-        cell.sides[2].normal =  rot_mat * (nodepos2 - nodepos3)
-        cell.sides[3].normal =  rot_mat * (nodepos3 - nodepos1)
+        cell.sides[1].normal =  rot_mat * (nodepos2 - nodepos1)
+        cell.sides[2].normal =  rot_mat * (nodepos3 - nodepos2)
+        cell.sides[3].normal =  rot_mat * (nodepos1 - nodepos3)
+
+        cell.sides[1].normal /= norm(cell.sides[1].normal)
+        cell.sides[2].normal /= norm(cell.sides[2].normal)
+        cell.sides[3].normal /= norm(cell.sides[3].normal)
     end
 end
 
