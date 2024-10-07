@@ -336,7 +336,23 @@ function find_LOS_cells!(mesh, cell_id, side_id)
                     dist = norm(other_side.center - side.center)
 
                     if intersect[1] == false || (dist < norm(intersect[2] - side.center))
-                        push!(sides, i)
+                        found = false
+
+                        for rest_cell_id in eachindex(mesh.cells)
+                            if rest_cell_id != cell_id && rest_cell_id != other_cell_id
+                                rest_cell = mesh.cells[rest_cell_id]
+                                intersect = line_triangle_intersect(side, other_side, rest_cell)
+
+                                if intersect[1] == true
+                                    found = true
+                                    break
+                                end
+                            end
+                        end
+                        
+                        if found == false
+                            push!(sides, i)
+                        end
                     end
                 end
             end
@@ -352,7 +368,7 @@ function check_normal_alignement(side, other_side)
     return ((sign(side.normal[1]) + sign(other_side.normal[1]) == 0.0) || (sign(side.normal[2]) + sign(other_side.normal[2]) == 0.0))
 end
 
-function line_triangle_intersect(side, other_cell, i)
+function line_triangle_intersect(side::Side, other_cell::Cell, i::Int)
     A = mesh.nodes[other_cell.nodes[1]].position
     B = mesh.nodes[other_cell.nodes[2]].position
     C = mesh.nodes[other_cell.nodes[3]].position
@@ -362,6 +378,30 @@ function line_triangle_intersect(side, other_cell, i)
         if k == i
             continue
         elseif k == 1
+            line2 = [A, B - A]
+        elseif k == 2
+            line2 = [B, C - B]
+        elseif k == 3
+            line2 = [C, A - C]
+        end
+
+        intersect = line_line_intersect(line1, line2)
+
+        if 0.0 <= intersect[1] &&  1.0 >= intersect[1] && 0.0 <= intersect[2] &&  1.0 >= intersect[2]
+            return (true, line1[1] + intersect[1]*line1[2])
+        end
+    end
+    return (false, zeros(3))
+end
+
+function line_triangle_intersect(side::Side, other_side::Side, rest_cell::Cell)
+    A = mesh.nodes[rest_cell.nodes[1]].position
+    B = mesh.nodes[rest_cell.nodes[2]].position
+    C = mesh.nodes[rest_cell.nodes[3]].position
+    line1 = [side.center, other_side.center - side.center]
+
+    for k in 1:3
+        if k == 1
             line2 = [A, B - A]
         elseif k == 2
             line2 = [B, C - B]
