@@ -34,8 +34,9 @@ mutable struct Side
     boundary::Int
     seen_sides::Vector{Tuple} # relevant for radiation modeling
     normal::Vector{Float64}
+    center::Vector{Float64}
 
-    Side() = new(-1, [], zeros(3))
+    Side() = new(-1, [], zeros(3), zeros(3))
 end
 
 mutable struct Cell
@@ -281,7 +282,7 @@ function connect_mesh!(mesh)
         end
     end
 
-    # set normal vector on sides
+    # set normal vector on sides and side centers
     rot_mat::Matrix{Float64} = zeros(3, 3)
 
     rot_mat[1, 2] = 1.0;
@@ -300,6 +301,10 @@ function connect_mesh!(mesh)
         cell.sides[1].normal /= norm(cell.sides[1].normal)
         cell.sides[2].normal /= norm(cell.sides[2].normal)
         cell.sides[3].normal /= norm(cell.sides[3].normal)
+
+        cell.sides[1].center = 0.5*(nodepos1 + nodepos2)
+        cell.sides[2].center = 0.5*(nodepos2 + nodepos3)
+        cell.sides[3].center = 0.5*(nodepos3 + nodepos1)
     end
 end
 
@@ -326,7 +331,7 @@ function find_LOS_cells!(mesh, cell_id, side_id)
             side = cell.sides[side_id]
             for i in 1:3
                 other_side = other_cell.sides[i]
-                if other_side.boundary > 0 && ((sign(side.normal[1]) + sign(other_side.normal[1]) == 0.0) || (sign(side.normal[2]) + sign(other_side.normal[2]) == 0.0))
+                if other_side.boundary > 0 && check_normal_alignement(side, other_side)
                     push!(sides, i)
                 end
             end
@@ -334,14 +339,10 @@ function find_LOS_cells!(mesh, cell_id, side_id)
             if length(sides) > 0
                 push!(cell.sides[side_id].seen_sides, (other_cell_id, sides))
             end
-
-            #node_id1 = cell.nodes[side_id]
-            #node_id2 = cell.nodes[side_id == 3 ? 1 : side_id + 1]
-            #mid_point = 0.5*(mesh.nodes[node_id1].position + mesh.nodes[node_id2].position)
-            #line = other_cell.barycentre - mid_point
-
-            #TODO if dot(normal side, normal side2) < 0 && if lline intersect side
-                # chek if line intersects oder cells
         end
     end
+end
+
+function check_normal_alignement(side, other_side)
+    return ((sign(side.normal[1]) + sign(other_side.normal[1]) == 0.0) || (sign(side.normal[2]) + sign(other_side.normal[2]) == 0.0))
 end
