@@ -365,7 +365,7 @@ function find_LOS_cells!(mesh, cell_id, side_id)
 end
 
 function check_normal_alignement(side, other_side)
-    return ((sign(side.normal[1]) + sign(other_side.normal[1]) == 0.0) || (sign(side.normal[2]) + sign(other_side.normal[2]) == 0.0))
+    return ((sign(side.normal[1]) + sign(other_side.normal[1]) == 0.0) || (sign(side.normal[2]) + sign(other_side.normal[2]) == 0.0) || dot(side.normal, other_side.normal) == 0.0)
 end
 
 function line_triangle_intersect(side::Side, other_cell::Cell, i::Int)
