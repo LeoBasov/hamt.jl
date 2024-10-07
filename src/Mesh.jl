@@ -326,7 +326,7 @@ function find_LOS_cells!(mesh, cell_id, side_id)
             for i in 1:3
                 side = cell.sides[side_id]
                 other_side = other_cell.sides[i]
-                if other_side.boundary > 0 && dot(side.normal, other_side.normal) > 0.0
+                if other_side.boundary > 0 && ((sign(side.normal[1]) + sign(other_side.normal[1]) == 0.0) || (sign(side.normal[2]) + sign(other_side.normal[2]) == 0.0))
                     push!(sides, i)
                 end
             end
