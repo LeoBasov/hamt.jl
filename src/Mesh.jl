@@ -332,7 +332,12 @@ function find_LOS_cells!(mesh, cell_id, side_id)
             for i in 1:3
                 other_side = other_cell.sides[i]
                 if other_side.boundary > 0 && check_normal_alignement(side, other_side)
-                    push!(sides, i)
+                    intersect = line_triangle_intersect(side, other_cell, i)
+                    dist = norm(other_side.center - side.center)
+
+                    if intersect[1] == false || (dist < norm(intersect[2] - side.center))
+                        push!(sides, i)
+                    end
                 end
             end
 
@@ -345,4 +350,40 @@ end
 
 function check_normal_alignement(side, other_side)
     return ((sign(side.normal[1]) + sign(other_side.normal[1]) == 0.0) || (sign(side.normal[2]) + sign(other_side.normal[2]) == 0.0))
+end
+
+function line_triangle_intersect(side, other_cell, i)
+    A = mesh.nodes[other_cell.nodes[1]].position
+    B = mesh.nodes[other_cell.nodes[2]].position
+    C = mesh.nodes[other_cell.nodes[3]].position
+    line1 = [side.center, other_cell.sides[i].center - side.center]
+
+    for k in 1:3
+        if k == i
+            continue
+        elseif k == 1
+            line2 = [A, B - A]
+        elseif k == 2
+            line2 = [B, C - B]
+        elseif k == 3
+            line2 = [C, A - C]
+        end
+
+        intersect = line_line_intersect(line1, line2)
+
+        if 0.0 <= intersect[1] &&  1.0 >= intersect[1] && 0.0 <= intersect[2] &&  1.0 >= intersect[2]
+            return (true, line1[1] + intersect[1]*line1[2])
+        end
+    end
+    return (false, zeros(3))
+end
+
+function line_line_intersect(line1, line2)
+    t = cross2d((line2[1] - line1[1]), line2[2]) / cross2d(line1[2], line2[2])
+    u = cross2d((line1[1] - line2[1]), line1[2]) / cross2d(line2[2], line1[2])
+    return (t, u)
+end
+
+function cross2d(v, w)
+    return v[1]*w[2] - v[2]*w[1]
 end
