@@ -48,7 +48,7 @@ mutable struct Cell
 end
 
 function is_surface_cell(cell::Cell)
-    sum([side.boundary for side in cell.sides]) > -1
+    sum([side.boundary for side in cell.sides]) > -3
 end
 
 mutable struct Mesh
@@ -323,8 +323,8 @@ function find_LOS_cells!(mesh, cell_id, side_id)
         other_cell = mesh.cells[other_cell_id]
         if cell_id != other_cell_id && is_surface_cell(other_cell)
             sides = []
+            side = cell.sides[side_id]
             for i in 1:3
-                side = cell.sides[side_id]
                 other_side = other_cell.sides[i]
                 if other_side.boundary > 0 && ((sign(side.normal[1]) + sign(other_side.normal[1]) == 0.0) || (sign(side.normal[2]) + sign(other_side.normal[2]) == 0.0))
                     push!(sides, i)
@@ -334,6 +334,7 @@ function find_LOS_cells!(mesh, cell_id, side_id)
             if length(sides) > 0
                 push!(cell.sides[side_id].seen_sides, (other_cell_id, sides))
             end
+
             #node_id1 = cell.nodes[side_id]
             #node_id2 = cell.nodes[side_id == 3 ? 1 : side_id + 1]
             #mid_point = 0.5*(mesh.nodes[node_id1].position + mesh.nodes[node_id2].position)
