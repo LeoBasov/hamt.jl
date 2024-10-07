@@ -11,6 +11,6 @@ set_boundary("angle_down", RADIATION, 1.0)
 
 execute()
 
-export_solution("surface_rad")
+export_solution("surface_rad", surface=true)
 
 finish_solver()
