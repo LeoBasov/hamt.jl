@@ -9,3 +9,5 @@ set_boundary("sides", NEUMANN, 0.0)
 execute()
 
 export_solution("radiation_block")
+
+finish_solver()
