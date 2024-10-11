@@ -7,7 +7,7 @@ mutable struct Timer
     executing::Vector
     exporting
 
-    Timer() = new(0.0, 0.0, 0.0, [], 0.0)
+    Timer() = new(nothing, nothing, nothing, [], 0.0)
 end
 
 function print_stats(name, stats)
@@ -24,27 +24,27 @@ function print_stats(name, stats)
 end
 
 function get_total_time(timer)
-    total_time = timer.reading_gmsh.time
-    total_time += timer.converting_mesh.time
-    total_time += timer.connecting_LOS_cells.time
-    total_time += sum([timer.executing[i].time for i in eachindex(timer.executing)])
-    total_time += timer.exporting.time
+    total_time = isnothing(timer.reading_gmsh) ? 0.0 : timer.reading_gmsh.time
+    total_time += isnothing(timer.converting_mesh) ? 0.0 : timer.converting_mesh.time
+    total_time += isnothing(timer.connecting_LOS_cells) ? 0.0 : timer.connecting_LOS_cells.time
+    total_time += isnothing(timer.executing) ? 0.0 : sum([timer.executing[i].time for i in eachindex(timer.executing)])
+    total_time += isnothing(timer.exporting) ? 0.0 : timer.exporting.time
 end
 
 function print_timer_evaluation(timer)
     total_time = get_total_time(timer)
 
-    reading_mesh_time = get_stime(timer.reading_gmsh.time)
-    pertotal_reading_mesh_time = get_pertotal_stime(timer.reading_gmsh.time, total_time)
+    reading_mesh_time = get_stime(timer.reading_gmsh)
+    pertotal_reading_mesh_time = get_pertotal_stime(timer.reading_gmsh, total_time)
 
-    converting_mesh_time = get_stime(timer.converting_mesh.time)
-    pertotal_converting_mesh_time = get_pertotal_stime(timer.converting_mesh.time, total_time)
+    converting_mesh_time = get_stime(timer.converting_mesh)
+    pertotal_converting_mesh_time = get_pertotal_stime(timer.converting_mesh, total_time)
 
-    exportingh_time = get_stime(timer.exporting.time)
-    pertotal_exporting_time = get_pertotal_stime(timer.exporting.time, total_time)
+    exportingh_time = get_stime(timer.exporting)
+    pertotal_exporting_time = get_pertotal_stime(timer.exporting, total_time)
 
-    connecting_LOS_cells_time = get_stime(timer.connecting_LOS_cells.time)
-    pertotal_connecting_LOS_cells_time = get_pertotal_stime(timer.connecting_LOS_cells.time, total_time)
+    connecting_LOS_cells_time = get_stime(timer.connecting_LOS_cells)
+    pertotal_connecting_LOS_cells_time = get_pertotal_stime(timer.connecting_LOS_cells, total_time)
 
     min_executing_time = get_stime(minimum([timer.executing[i].time for i in eachindex(timer.executing)]))
     ave_executing_time = get_stime(sum([timer.executing[i].time for i in eachindex(timer.executing)]) / length(timer.executing))
@@ -65,10 +65,26 @@ function print_timer_evaluation(timer)
     println("=======================================================================")
 end
 
-function get_stime(time)
+function get_stime(time::Float64)
     @sprintf("%10.6f", time)
 end
 
-function get_pertotal_stime(time, total_time)
+function get_stime(timer)
+    if isnothing(timer)
+        @sprintf("%10.6f", 0.0)
+    else
+        @sprintf("%10.6f", timer.time)
+    end
+end
+
+function get_pertotal_stime(time::Float64, total_time::Float64)
     @sprintf("%7.4f", 100 * time / total_time)
+end
+
+function get_pertotal_stime(timer, total_time)
+    if isnothing(timer)
+        @sprintf("%7.4f", 0.0)
+    else
+        @sprintf("%7.4f", 100 * timer.time / total_time)
+    end
 end
