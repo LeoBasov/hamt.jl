@@ -31,7 +31,7 @@ function read_hamt_mesh(file_name)
     global initial_temp
     global hamt_mesh
     println("reading hamt mesh")
-    mesh = deserialize(file_name)
+    timer.reading_hamt = @timed mesh = deserialize(file_name)
     resize!(solution, length(mesh.nodes))
     fill!(solution, initial_temp)
     hamt_mesh = true

@@ -1,13 +1,14 @@
 using Printf
 
 mutable struct Timer
+    reading_hamt
     reading_gmsh
     converting_mesh
     connecting_LOS_cells
     executing::Vector
     exporting
 
-    Timer() = new(nothing, nothing, nothing, [], 0.0)
+    Timer() = new(nothing, nothing, nothing, nothing, [], 0.0)
 end
 
 function print_stats(name, stats)
@@ -24,7 +25,9 @@ function print_stats(name, stats)
 end
 
 function get_total_time(timer)
-    total_time = isnothing(timer.reading_gmsh) ? 0.0 : timer.reading_gmsh.time
+    total_time = 0.0
+    total_time += isnothing(timer.reading_hamt) ? 0.0 : timer.reading_hamt.time
+    total_time += isnothing(timer.reading_gmsh) ? 0.0 : timer.reading_gmsh.time
     total_time += isnothing(timer.converting_mesh) ? 0.0 : timer.converting_mesh.time
     total_time += isnothing(timer.connecting_LOS_cells) ? 0.0 : timer.connecting_LOS_cells.time
     total_time += isnothing(timer.executing) ? 0.0 : sum([timer.executing[i].time for i in eachindex(timer.executing)])
@@ -33,6 +36,9 @@ end
 
 function print_timer_evaluation(timer)
     total_time = get_total_time(timer)
+
+    reading_hamt_time = get_stime(timer.reading_hamt)
+    pertotal_reading_hamt_time = get_pertotal_stime(timer.reading_hamt, total_time)
 
     reading_mesh_time = get_stime(timer.reading_gmsh)
     pertotal_reading_mesh_time = get_pertotal_stime(timer.reading_gmsh, total_time)
@@ -55,6 +61,7 @@ function print_timer_evaluation(timer)
     println("\nMPI task timing breakdown:")
     println("Section         |  min time  |  avg time  |  max time  |%varavg| %total")
     println("-----------------------------------------------------------------------")
+    println("reading hamt    | " * reading_hamt_time * " | " * reading_hamt_time * " | " * reading_hamt_time * " |-------| " * pertotal_reading_hamt_time)
     println("reading gmsh    | " * reading_mesh_time * " | " * reading_mesh_time * " | " * reading_mesh_time * " |-------| " * pertotal_reading_mesh_time)
     println("converting mesh | " * converting_mesh_time * " | " * converting_mesh_time * " | " * converting_mesh_time * " |-------| " * pertotal_converting_mesh_time)
     println("connecting LOS  | " * connecting_LOS_cells_time * " | " * connecting_LOS_cells_time * " | " * connecting_LOS_cells_time * " |-------| " * pertotal_connecting_LOS_cells_time)
