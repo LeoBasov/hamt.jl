@@ -2,6 +2,7 @@ module HAMT
 
 using Serialization
 
+export read_hamt_mesh
 export read_mesh
 export set_boundary
 export set_surface
@@ -22,16 +23,32 @@ mesh = Mesh()
 solution::Vector{Float64} = []
 max_error = 1e-12
 initial_temp = 300.0
+hamt_mesh::Bool = false
+
+function read_hamt_mesh(file_name)
+    global mesh
+    global solution
+    global initial_temp
+    global hamt_mesh
+    println("reading hamt mesh")
+    mesh = deserialize(file_name)
+    resize!(solution, length(mesh.nodes))
+    fill!(solution, initial_temp)
+    hamt_mesh = true
+    return nothing
+end
 
 function read_mesh(file_name)
     global mesh
     global solution
     global initial_temp
+    global hamt_mesh
     println("reading and converting mesh")
     timer.reading_gmsh = @timed read_Gmsh_file(file_name)
     timer.converting_mesh = @timed mesh = convert_Gmsh2_to_Mesh(timer.reading_gmsh.value)
     resize!(solution, length(mesh.nodes))
     fill!(solution, initial_temp)
+    hamt_mesh = false
     print("N nodes: " * string(length(mesh.nodes)) * "\n")
     print("N cells: " * string(length(mesh.cells)) * "\n")
     print_stats("reading gmsh", timer.reading_gmsh)
@@ -61,7 +78,7 @@ function execute(coord_system::CoordSystem = CARTESIAN; mesh_export_name::String
     new_error = 0.0
     mesh_has_radiation = has_radiation_boundary(mesh)
 
-    if mesh_has_radiation
+    if !hamt_mesh && mesh_has_radiation
         println("connecting LOS cells")
         timer.connecting_LOS_cells = @timed connect_LineOfSite_cells!(mesh)
         print_stats("connecting LOS cells", timer.connecting_LOS_cells)
