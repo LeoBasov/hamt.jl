@@ -85,7 +85,7 @@ function export_solution(file_name::String; surface::Bool = false)
     global mesh
     global solution
     println("exporting")
-    timer.exporting = @timed write_mesh(file_name, mesh, solution, surface)
+    timer.exporting = @timed write_vtk(file_name, mesh, solution, surface)
     print_stats("export", timer.exporting)
     return nothing
 end

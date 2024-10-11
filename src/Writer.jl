@@ -1,7 +1,7 @@
 using WriteVTK
 using HAMT
 
-function write_mesh(file_name, mesh, solution, surface)
+function write_vtk(file_name, mesh, solution, surface)
     points::Matrix{Float64} = zeros(3, 3*length(mesh.cells))
     cells::Vector{MeshCell} = []
     sol::Matrix{Float64} = zeros(1, 3*length(mesh.cells))
