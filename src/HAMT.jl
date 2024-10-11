@@ -6,6 +6,7 @@ export read_hamt_mesh
 export read_mesh
 export set_boundary
 export set_surface
+export export_mesh
 export execute
 export export_solution
 export finish_solver
@@ -70,7 +71,24 @@ function set_surface(name, type, value)
     return nothing
 end
 
-function execute(coord_system::CoordSystem = CARTESIAN; mesh_export_name::String = "")
+function export_mesh(file_name)
+    global mesh
+    global hamt_mesh
+    global timer
+    mesh_has_radiation = has_radiation_boundary(mesh)
+
+    if !hamt_mesh && mesh_has_radiation
+        println("connecting LOS cells")
+        timer.connecting_LOS_cells = @timed connect_LineOfSite_cells!(mesh)
+        print_stats("connecting LOS cells", timer.connecting_LOS_cells)
+    end
+
+    println("writing mesh to file")
+    serialize(file_name * ".hamt", mesh)
+    hamt_mesh = true
+end
+
+function execute(coord_system::CoordSystem = CARTESIAN)
     global mesh
     global solution
     global max_error
@@ -82,11 +100,6 @@ function execute(coord_system::CoordSystem = CARTESIAN; mesh_export_name::String
         println("connecting LOS cells")
         timer.connecting_LOS_cells = @timed connect_LineOfSite_cells!(mesh)
         print_stats("connecting LOS cells", timer.connecting_LOS_cells)
-    end
-
-    if length(mesh_export_name) > 0
-        println("writing mesh to file")
-        serialize(mesh_export_name * ".hamt", mesh)
     end
 
     println("excuting")
