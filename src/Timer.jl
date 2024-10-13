@@ -8,7 +8,7 @@ mutable struct Timer
     executing::Vector
     exporting
 
-    Timer() = new(nothing, nothing, nothing, nothing, [], 0.0)
+    Timer() = new(nothing, nothing, nothing, nothing, [], nothing)
 end
 
 function print_stats(name, stats)
@@ -30,7 +30,7 @@ function get_total_time(timer)
     total_time += isnothing(timer.reading_gmsh) ? 0.0 : timer.reading_gmsh.time
     total_time += isnothing(timer.converting_mesh) ? 0.0 : timer.converting_mesh.time
     total_time += isnothing(timer.connecting_LOS_cells) ? 0.0 : timer.connecting_LOS_cells.time
-    total_time += isnothing(timer.executing) ? 0.0 : sum([timer.executing[i].time for i in eachindex(timer.executing)])
+    total_time += length(timer.executing) == 0 ? 0.0 : sum([timer.executing[i].time for i in eachindex(timer.executing)])
     total_time += isnothing(timer.exporting) ? 0.0 : timer.exporting.time
 end
 
@@ -52,11 +52,11 @@ function print_timer_evaluation(timer)
     connecting_LOS_cells_time = get_stime(timer.connecting_LOS_cells)
     pertotal_connecting_LOS_cells_time = get_pertotal_stime(timer.connecting_LOS_cells, total_time)
 
-    min_executing_time = get_stime(minimum([timer.executing[i].time for i in eachindex(timer.executing)]))
-    ave_executing_time = get_stime(sum([timer.executing[i].time for i in eachindex(timer.executing)]) / length(timer.executing))
-    max_executing_time = get_stime(maximum([timer.executing[i].time for i in eachindex(timer.executing)]))
+    min_executing_time = get_stime(length(timer.executing) == 0 ? 0.0 : minimum([timer.executing[i].time for i in eachindex(timer.executing)]))
+    ave_executing_time = get_stime(length(timer.executing) == 0 ? 0.0 : sum([timer.executing[i].time for i in eachindex(timer.executing)]) / length(timer.executing))
+    max_executing_time = get_stime(length(timer.executing) == 0 ? 0.0 : maximum([timer.executing[i].time for i in eachindex(timer.executing)]))
 
-    pertotal_executing_time = get_pertotal_stime(sum([timer.executing[i].time for i in eachindex(timer.executing)]), total_time)
+    pertotal_executing_time = get_pertotal_stime(length(timer.executing) == 0 ? 0.0 : sum([timer.executing[i].time for i in eachindex(timer.executing)]), total_time)
 
     println("\nMPI task timing breakdown:")
     println("Section         |  min time  |  avg time  |  max time  |%varavg| %total")
