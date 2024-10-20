@@ -32,12 +32,11 @@ end
 
 mutable struct Side
     boundary::Int
-    seen_sides::Vector{Tuple} # relevant for radiation modeling
-    configuration_factors::Vector{Float64} # relevant for radiation modeling
+    seen_sides::Vector{Tuple} # relevant for radiation modeling [cell_id, [side_ids], [configuration_factors]]
     normal::Vector{Float64}
     center::Vector{Float64}
 
-    Side() = new(-1, [], [], zeros(3), zeros(3))
+    Side() = new(-1, [], zeros(3), zeros(3))
 end
 
 mutable struct Cell
@@ -321,6 +320,30 @@ function connect_LineOfSite_cells!(mesh)
             end
         end
     end
+
+    # calculate configuration factors
+    for cell_id in eachindex(mesh.cells)
+        cellA = mesh.cells[cell_id]
+
+        for i in 1:3
+            ip = i == 3 ? 1 : i + 1
+            xA0 = mesh.nodes[cellA.nodes[i]].position
+            xA1 = mesh.nodes[cellA.nodes[ip]].position
+            xA0xA1times2 = 2.0 * length(xA1 - xA0)
+            for seen_side in cellA.sides[i].seen_sides
+                cellB = mesh.cells[seen_side[1]]
+                conf_factors::Vector{Float64} = []
+                for s in seen_side[2]
+                    sp = s == 3 ? 1 : s + 1
+                    xB0 = mesh.nodes[cellB.nodes[s]].position
+                    xB1 = mesh.nodes[cellB.nodes[sp]].position
+                    configuration_factor = (length(xB0 - xA0) + length(xB1 - xA1) - length(xB0 - xA1) - length(xB1 - xA0)) / xA0xA1times2
+                    push!(conf_factors, configuration_factor)
+                end
+                push!(seen_side[3], conf_factors)
+            end
+        end
+    end
 end
 
 function find_LOS_cells!(mesh, cell_id, side_id)
@@ -359,7 +382,7 @@ function find_LOS_cells!(mesh, cell_id, side_id)
             end
 
             if length(sides) > 0
-                push!(cell.sides[side_id].seen_sides, (other_cell_id, sides))
+                push!(cell.sides[side_id].seen_sides, (other_cell_id, sides, []))
             end
         end
     end
