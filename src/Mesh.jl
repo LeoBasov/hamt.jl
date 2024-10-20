@@ -329,7 +329,7 @@ function connect_LineOfSite_cells!(mesh)
             ip = i == 3 ? 1 : i + 1
             xA0 = mesh.nodes[cellA.nodes[i]].position
             xA1 = mesh.nodes[cellA.nodes[ip]].position
-            xA0xA1times2 = 2.0 * length(xA1 - xA0)
+            xA0xA1times2 = 2.0 * norm(xA1 - xA0)
             for seen_side in cellA.sides[i].seen_sides
                 cellB = mesh.cells[seen_side[1]]
                 conf_factors::Vector{Float64} = []
@@ -337,7 +337,7 @@ function connect_LineOfSite_cells!(mesh)
                     sp = s == 3 ? 1 : s + 1
                     xB0 = mesh.nodes[cellB.nodes[s]].position
                     xB1 = mesh.nodes[cellB.nodes[sp]].position
-                    configuration_factor = (length(xB0 - xA0) + length(xB1 - xA1) - length(xB0 - xA1) - length(xB1 - xA0)) / xA0xA1times2
+                    configuration_factor = (norm(xB0 - xA0) + norm(xB1 - xA1) - norm(xB0 - xA1) - norm(xB1 - xA0)) / xA0xA1times2
                     push!(conf_factors, configuration_factor)
                 end
                 push!(seen_side[3], conf_factors)
