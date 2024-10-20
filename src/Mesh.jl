@@ -33,10 +33,11 @@ end
 mutable struct Side
     boundary::Int
     seen_sides::Vector{Tuple} # relevant for radiation modeling
+    configuration_factors::Vector{Float64} # relevant for radiation modeling
     normal::Vector{Float64}
     center::Vector{Float64}
 
-    Side() = new(-1, [], zeros(3), zeros(3))
+    Side() = new(-1, [], [], zeros(3), zeros(3))
 end
 
 mutable struct Cell
