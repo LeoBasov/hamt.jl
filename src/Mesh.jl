@@ -355,7 +355,7 @@ function find_LOS_cells!(mesh, cell_id, side_id)
             side = cell.sides[side_id]
             for i in 1:3
                 other_side = other_cell.sides[i]
-                if other_side.boundary > 0 && check_normal_alignement(side, other_side)
+                if other_side.boundary > 0
                     intersect = line_triangle_intersect(side, other_cell, i)
                     dist = norm(other_side.center - side.center)
 
@@ -386,10 +386,6 @@ function find_LOS_cells!(mesh, cell_id, side_id)
             end
         end
     end
-end
-
-function check_normal_alignement(side, other_side)
-    return ((sign(side.normal[1]) + sign(other_side.normal[1]) == 0.0) || (sign(side.normal[2]) + sign(other_side.normal[2]) == 0.0) || dot(side.normal, other_side.normal) == 0.0)
 end
 
 function line_triangle_intersect(side::Side, other_cell::Cell, i::Int)
