@@ -32,11 +32,12 @@ end
 
 mutable struct Side
     boundary::Int
+    conf_factor_backgr # configuration factpr for background radiation
     seen_sides::Vector{Tuple} # relevant for radiation modeling [cell_id, [side_ids], [configuration_factors]]
     normal::Vector{Float64}
     center::Vector{Float64}
 
-    Side() = new(-1, [], zeros(3), zeros(3))
+    Side() = new(-1, 1.0, [], zeros(3), zeros(3))
 end
 
 mutable struct Cell
@@ -338,9 +339,11 @@ function connect_LineOfSite_cells!(mesh)
                     xB0 = mesh.nodes[cellB.nodes[s]].position
                     xB1 = mesh.nodes[cellB.nodes[sp]].position
                     configuration_factor = (norm(xB0 - xA0) + norm(xB1 - xA1) - norm(xB0 - xA1) - norm(xB1 - xA0)) / xA0xA1times2
+                    cellA.sides[i].conf_factor_backgr -= configuration_factor
                     push!(conf_factors, configuration_factor)
                 end
                 push!(seen_side[3], conf_factors)
+                cellA.sides[i].conf_factor_backgr = max(cellA.sides[i].conf_factor_backgr, 0.0)
             end
         end
     end
