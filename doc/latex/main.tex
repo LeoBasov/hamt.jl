@@ -1,0 +1,30 @@
+\documentclass[10pt,a4paper]{scrreprt}
+\usepackage[utf8]{inputenc}
+%Packet für Grafiken
+\usepackage{float} %Paket damit die Grafik dort beleiben wo sie hingehören mit [H]
+\usepackage{graphicx}
+%Packaet fuer Bilder neben einander
+\usepackage{subcaption}
+
+% library package
+\usepackage[backend=bibtex]{biblatex}
+\addbibresource{literature.bib}
+
+% my custom commands
+\newcommand{\mm}[1]{\mathrm{#1}}
+\newcommand{\bb}[1]{\mathrm{\textbf{#1}}}
+\newcommand*\diff{\mathop{}\!\mathrm{d}}
+\newcommand*\Diff[1]{\mathop{}\!\mathrm{d^#1}}
+
+\begin{document}
+
+\include{titlepage}
+
+\tableofcontents
+
+\include{chapters/introduction}
+\include{chapters/boundary_conditions}
+
+\printbibliography
+
+\end{document}
