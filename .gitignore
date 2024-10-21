@@ -4,6 +4,9 @@
 *.blg
 *.log
 *.synctex.gz
+*-blx.bib
+*.run.xml
+*.toc
 
 # Jupyter files
 .ipynb_checkpoints
