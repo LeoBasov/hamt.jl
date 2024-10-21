@@ -1,3 +1,10 @@
+# Latex files
+*.aux
+*.bbl
+*.blg
+*.log
+*.synctex.gz
+
 # Jupyter files
 .ipynb_checkpoints
 
