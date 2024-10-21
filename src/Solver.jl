@@ -187,7 +187,25 @@ function set_radiation_boundary!(matrix, vector, mesh, node_id, solution)
 
     normal ./= norm(normal)
     matrix[node_id, node_id] -= 4.0 * epsilon * σ * solution[node_id]^3 * conf_factor_backgr
-    vector[node_id] = -3.0 * epsilon * σ * solution[node_id]^4 * conf_factor_backgr
+    vector[node_id] += -3.0 * epsilon * σ * solution[node_id]^4 * conf_factor_backgr
+
+    if boundary1.type == RADIATION && boundary2.type == RADIATION
+        for seen_side in side1.seen_sides
+            set_radtion_values!(matrix, vector, mesh, node_id, solution, seen_side, epsilon)
+        end
+
+        for seen_side in side2.seen_sides
+            set_radtion_values!(matrix, vector, mesh, node_id, solution, seen_side, epsilon)
+        end
+    elseif boundary1.type == RADIATION
+        for seen_side in side1.seen_sides
+            set_radtion_values!(matrix, vector, mesh, node_id, solution, seen_side, epsilon)
+        end
+    else
+        for seen_side in side2.seen_sides
+            set_radtion_values!(matrix, vector, mesh, node_id, solution, seen_side, epsilon)
+        end
+    end
 
     for cell_id in node.adjacent_cells
         cell = mesh.cells[cell_id]
@@ -205,6 +223,22 @@ function set_radiation_boundary!(matrix, vector, mesh, node_id, solution)
         matrix[node_id, node_id_ip] += coeffs[2]
         matrix[node_id, node_id_im] += coeffs[3]
     end
+end
+
+function set_radtion_values!(matrix, vector, mesh, node_id, solution, seen_side, epsilon)
+    other_cell = mesh.cells[seen_side[1]]
+    other_side_id = seen_side[2][1]
+    other_node_id1 = other_cell.nodes[other_side_id]
+    other_node_id2 = other_cell.nodes[other_side_id == 3 ? 1 : other_side_id + 1]
+
+    matrix[node_id, other_node_id1] += 2.0 * epsilon * σ * solution[other_node_id1]^3 * seen_side[3][1]
+    matrix[node_id, other_node_id2] += 2.0 * epsilon * σ * solution[other_node_id2]^3 * seen_side[3][1]
+
+    vector[node_id] += 1.5 * epsilon * σ * solution[other_node_id1]^4 * seen_side[3][1]
+    vector[node_id] += 1.5 * epsilon * σ * solution[other_node_id2]^4 * seen_side[3][1]
+
+    matrix[node_id, node_id] -= 4.0 * epsilon * σ * solution[node_id]^3 * seen_side[3][1]
+    vector[node_id] += -3.0 * epsilon * σ * solution[node_id]^4 * seen_side[3][1]
 end
 
 function calc_normal_derevative_coefficients(mesh, normal_vec, cell_id, node_id)
