@@ -57,9 +57,9 @@ function read_mesh(file_name)
     return nothing
 end
 
-function set_boundary(name, type, value)
+function set_boundary(name, type, value; background_radiaton_only = false)
     global mesh
-    set_boundary!(mesh, name, type, value)
+    set_boundary!(mesh, name, type, value, background_radiaton_only)
     print("set boundary [" * name * "] to type [" * string(type) * "] and value [" * string(value) *"]\n")
     return nothing
 end

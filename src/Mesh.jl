@@ -4,8 +4,9 @@ using LinearAlgebra
 
 mutable struct Boundary
     type::BoundaryType
+    background_radiaton_only::Bool
     value
-    Boundary() = new(DIRICHLET, 1.0)
+    Boundary() = new(DIRICHLET, 1.0, false)
 end
 
 mutable struct Surface
@@ -76,9 +77,10 @@ function has_radiation_boundary(mesh)
     return false
 end
 
-function set_boundary!(mesh, name, type, value)
+function set_boundary!(mesh, name, type, value, background_radiaton_only)
     bound_id = mesh.boundary_names[name]
     boundary = mesh.boundaries[bound_id]
+    boundary.background_radiaton_only = background_radiaton_only
     boundary.type = type
     boundary.value = value
 end
@@ -315,7 +317,7 @@ function connect_LineOfSite_cells!(mesh)
         if is_surface_cell(cell)
             for side_id in eachindex(cell.sides)
                 side = cell.sides[side_id]
-                if side.boundary > 0 &&  mesh.boundaries[side.boundary].type == RADIATION
+                if side.boundary > 0 &&  mesh.boundaries[side.boundary].type == RADIATION && mesh.boundaries[side.boundary].background_radiaton_only == false
                     find_LOS_cells!(mesh, cell_id, side_id)
                 end
             end
