@@ -121,10 +121,15 @@ end
 end
 
 function simple_triangular_solver_test()
+	background_radiaton_only = false
 	gmsh_file = HAMT.read_Gmsh_file("test_data/block_single_triangular.msh")
 	mesh = HAMT.convert_Gmsh2_to_Mesh(gmsh_file)
 	solution::Vector{Float64} =  []
 	resize!(solution, length(mesh.nodes))
+	HAMT.set_boundary!(mesh, "top", HAMT.DIRICHLET, 1.0, background_radiaton_only)
+	HAMT.set_boundary!(mesh, "buttom", HAMT.DIRICHLET, 1.0, background_radiaton_only)
+	HAMT.set_boundary!(mesh, "left", HAMT.DIRICHLET, 1.0, background_radiaton_only)
+	HAMT.set_boundary!(mesh, "right", HAMT.DIRICHLET, 1.0, background_radiaton_only)
 	matrix, vector = HAMT.convert_triangular_mesh(solution, mesh, CARTESIAN)
 	HAMT.solve_heat_equation!(solution, mesh, CARTESIAN)
 
@@ -161,9 +166,13 @@ function simple_triangular_solver_test()
 end
 
 function set_boundary_test()
+	background_radiaton_only = false
 	gmsh_file = HAMT.read_Gmsh_file("test_data/block_single_triangular.msh")
 	mesh = HAMT.convert_Gmsh2_to_Mesh(gmsh_file)
-	HAMT.set_boundary!(mesh, "top", HAMT.DIRICHLET, 3.0)
+	HAMT.set_boundary!(mesh, "top", HAMT.DIRICHLET, 3.0, background_radiaton_only)
+	HAMT.set_boundary!(mesh, "buttom", HAMT.DIRICHLET, 1.0, background_radiaton_only)
+	HAMT.set_boundary!(mesh, "left", HAMT.NEUMANN, 0.0, background_radiaton_only)
+	HAMT.set_boundary!(mesh, "right", HAMT.NEUMANN, 0.0, background_radiaton_only)
 	solution::Vector{Float64} = []
 	resize!(solution, length(mesh.nodes))
 	matrix, vector = HAMT.convert_triangular_mesh(solution, mesh, CARTESIAN)
@@ -171,15 +180,15 @@ function set_boundary_test()
 
 	@test vector[1] == 1.0
 	@test vector[2] == 1.0
-	@test vector[3] == 2.0
-	@test vector[4] == 2.0
+	@test vector[3] == 3.0
+	@test vector[4] == 3.0
 	@test vector[5] == 0.0
 
 	@test solution[1] == 1.0
 	@test solution[2] == 1.0
-	@test solution[3] == 2.0
-	@test solution[4] == 2.0
-	@test solution[5] == 1.5
+	@test solution[3] == 3.0
+	@test solution[4] == 3.0
+	@test solution[5] == 2.0
 end
 
 @testset "Solver.jl" begin
