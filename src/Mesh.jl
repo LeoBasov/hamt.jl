@@ -333,16 +333,14 @@ function connect_LineOfSite_cells!(mesh)
             xA0xA1times2 = 2.0 * norm(xA1 - xA0)
             for seen_side in cellA.sides[i].seen_sides
                 cellB = mesh.cells[seen_side[1]]
-                conf_factors::Vector{Float64} = []
                 for s in seen_side[2]
                     sp = s == 3 ? 1 : s + 1
                     xB0 = mesh.nodes[cellB.nodes[s]].position
                     xB1 = mesh.nodes[cellB.nodes[sp]].position
                     configuration_factor = (norm(xB0 - xA0) + norm(xB1 - xA1) - norm(xB0 - xA1) - norm(xB1 - xA0)) / xA0xA1times2
                     cellA.sides[i].conf_factor_backgr -= configuration_factor
-                    push!(conf_factors, configuration_factor)
+                    push!(seen_side[3], configuration_factor)
                 end
-                push!(seen_side[3], conf_factors)
             end
             cellA.sides[i].conf_factor_backgr = max(cellA.sides[i].conf_factor_backgr, 0.0)
         end
