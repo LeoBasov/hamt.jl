@@ -151,6 +151,8 @@ function set_radiation_boundary!(matrix, vector, mesh, node_id, solution)
     node = mesh.nodes[node_id]
     boundary1 = mesh.boundaries[node.boundaries[1]]
     boundary2 = mesh.boundaries[node.boundaries[2]]
+    side1 = get_side(node_id, mesh, 1)
+    side2 = get_side(node_id, mesh, 2)
     node_pos_left = mesh.nodes[node.adjacent_nodes[begin]].position
     node_pos_right = mesh.nodes[node.adjacent_nodes[end]].position
     rot_mat::Matrix{Float64} = zeros(3, 3)
@@ -159,6 +161,7 @@ function set_radiation_boundary!(matrix, vector, mesh, node_id, solution)
     L_right = norm(node.position - node_pos_right)
     L = L_left + L_right
     normal::Vector{Float64} = []
+    conf_factor_backgr = 0.0
 
     rot_mat[1, 2] = 1.0;
     rot_mat[2, 1] = -1.0;
@@ -171,19 +174,20 @@ function set_radiation_boundary!(matrix, vector, mesh, node_id, solution)
     if boundary1.type == RADIATION && boundary2.type == RADIATION
         epsilon = (L_left * boundary1.value + L_right * boundary2.value) / L
         copy!(normal, 0.5 * rot_mat * (node_pos_left - node.position) + 0.5 * rot_mat * (node.position - node_pos_right))
+        conf_factor_backgr = (L_left * side1.conf_factor_backgr + L_right * side2.conf_factor_backgr) / L
     elseif boundary1.type == RADIATION
         epsilon = boundary1.value;
         copy!(normal, rot_mat * (node_pos_left - node.position))
+        conf_factor_backgr = side1.conf_factor_backgr
     else
         epsilon = boundary2.value;
         copy!(normal, rot_mat * (node.position - node_pos_right))
+        conf_factor_backgr = side2.conf_factor_backgr
     end
 
     normal ./= norm(normal)
-    a = 4.0 * epsilon * σ * solution[node_id]^3
-
-    matrix[node_id, node_id] -= a
-    vector[node_id] = -3.0 * epsilon * σ * solution[node_id]^4
+    matrix[node_id, node_id] -= 4.0 * epsilon * σ * solution[node_id]^3 * conf_factor_backgr
+    vector[node_id] = -3.0 * epsilon * σ * solution[node_id]^4 * conf_factor_backgr
 
     for cell_id in node.adjacent_cells
         cell = mesh.cells[cell_id]

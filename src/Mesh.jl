@@ -343,8 +343,8 @@ function connect_LineOfSite_cells!(mesh)
                     push!(conf_factors, configuration_factor)
                 end
                 push!(seen_side[3], conf_factors)
-                cellA.sides[i].conf_factor_backgr = max(cellA.sides[i].conf_factor_backgr, 0.0)
             end
+            cellA.sides[i].conf_factor_backgr = max(cellA.sides[i].conf_factor_backgr, 0.0)
         end
     end
 end
@@ -449,4 +449,11 @@ end
 
 function cross2d(v, w)
     return v[1]*w[2] - v[2]*w[1]
+end
+
+function get_side(node_id, mesh, n_side)
+    node = mesh.nodes[node_id]
+    cells = (mesh.cells[node.adjacent_cells[begin]], mesh.cells[node.adjacent_cells[end]])
+    pos = (findall(x -> x == node_id, cells[1].nodes)[1], findall(x -> x == node_id, cells[2].nodes)[1] == 1 ? 3 : findall(x -> x == node_id, cells[2].nodes)[1] - 1)
+    return cells[n_side].sides[pos[n_side]]
 end
