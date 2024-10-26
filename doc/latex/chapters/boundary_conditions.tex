@@ -28,6 +28,10 @@ the configuration factor from surface $\overline{\mm{AB}}$ to surface $\overline
 	F_{\overline{\mm{AB}} \rightarrow \overline{\mm{CD}}} = \frac{\overline{\mm{AC}} + \overline{\mm{BD}} - \overline{\mm{AD}} - \overline{\mm{BC}}}{2 \overline{\mm{AB}}}
 \end{equation}
 where $\overline{\mm{XY}}$ is the distance from $\mm{X}$ to $\mm{Y}$.
+The total heat flux from or to a single surface is the sum of the heat fluxes to other surfaces plus the heat flux to the background
+\begin{equation}
+	\dot{Q}_{tot} = \sigma A_1 \left\{\epsilon_1 T_1^4 \sum_i F_{1 \rightarrow i} - \sum_i \epsilon_i F_{1 \rightarrow i}  T_i^4 \right\} + \dot{Q}_{backgr}
+\end{equation}
 
 In terms of boundary conditions we ca write
 \begin{equation}
