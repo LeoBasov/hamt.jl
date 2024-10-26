@@ -7,6 +7,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+- performance upgrae for connecting LOS cells
+- non perfect contanct conditions for sufraces
+- grey body radiation
+- setting of background temperature
+
 ## [0.6.0] - 2024-09-27
 
 - implemented gray body radiation to 0 K background
