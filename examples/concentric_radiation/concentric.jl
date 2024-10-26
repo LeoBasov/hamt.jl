@@ -2,7 +2,7 @@
 
 using HAMT
 
-read_mesh("examples/concentric_radiation/concentric.msh")
+read_mesh("examples/concentric_radiation/concentric_fine.msh")
 
 set_boundary("inner", DIRICHLET, 500.0)
 set_boundary("middle", RADIATION, 1.0)
@@ -14,6 +14,6 @@ set_boundary("outer", RADIATION, 1.0, background_radiaton_only=true)
 
 execute()
 
-export_solution("concentric")
+export_solution("concentric_fine")
 
 finish_solver()
