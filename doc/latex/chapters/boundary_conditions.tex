@@ -12,32 +12,33 @@ If we now assume a per cell constant thermal conductivity $\lambda$ this means t
 
 Using the FEM ansatz with linear tetrahedral elements we can write
 \begin{equation}
-	\int_0^1 \int_0^{1 - \eta} \lambda \left( \vec{n} \cdot \nabla T \right) \phi_i \det\left( \mm{J}(x, y) \right) \diff{\xi} \diff{\eta} = \dot{q}_{\perp} \int_0^1 \int_0^{1 - \eta} \phi_i \det\left( \mm{J}(x, y) \right) \diff{\xi} \diff{\eta}.
+	\lambda \int_0^1 \int_0^{1 - \eta} \left( \vec{n} \cdot \nabla T \right) \phi_0 \det\left( \mm{J}(x, y) \right) \diff{\xi} \diff{\eta} = \dot{q}_{\perp} \int_0^1 \int_0^{1 - \eta} \phi_0 \det\left( \mm{J}(x, y) \right) \diff{\xi} \diff{\eta}.
 \end{equation}
 Assuming the boundary is the button one the normal vector is simply
 \begin{equation}
 	\vec{n} = 
 	\begin{pmatrix}
 	0\\
-	1
+	-1
 	\end{pmatrix}
 \end{equation}
 which leads to
 \begin{equation}
-	\vec{n} \cdot \nabla T = \pdv{T}{y} =  \pdv{\phi_0}{\xi}\pdv{\xi}{y} + \pdv{\phi_0}{\eta}\pdv{\eta}{y}
+	\vec{n} \cdot \nabla T = -\pdv{T}{y} = \frac{T_0(\Delta x_1 - \Delta x_2) + T_1 \Delta x_2 - T_2 \Delta x_1}{\det\left(\mm{J}(x,y)\right)}
 \end{equation}
 which leads to
-\begin{equation}
-	 \int_0^1 \int_0^{1 - \eta} T_i  \phi_i  \diff{\xi} \diff{\eta} =  \frac{\dot{q}_{\perp} \det\left( \mm{J}(x, y) \right)}{\lambda \left(\Delta x_2 - \Delta x_1 \right)} \int_0^1 \int_0^{1 - \eta} \phi_i  \diff{\xi} \diff{\eta}.
-\end{equation}
-For the individual integrals $[\phi_i] \equiv \int_0^1 \int_0^{1-\eta} \phi_i \diff{\xi} \diff{\eta}$ we get
 \begin{align}
-	[\phi_0] &= [\phi_1] = [\phi_2] = \frac{1}{6} \\
-	\sum_i [\phi_i] &= \frac{1}{2}.
+	\left( T_0(\Delta x_1 - \Delta x_2) + T_1 \Delta x_2 - T_2 \Delta x_1\right) &\iint \phi_0 \diff{\xi} \diff{\eta} =\\
+	\frac{\dot{q} \det\left( \mm{J}(x, y) \right)}{\lambda} &\iint \phi_0 \diff{\xi} \diff{\eta}
 \end{align}
-In the end we get
 \begin{equation}
-	T_0 + T_1 + T_2 =  3 \frac{\dot{q}_{\perp}}{\lambda}\frac{\Delta x_1 \Delta y_2 - \Delta x_2 \Delta y_1}{\Delta x_2 - \Delta x_1}
+	\boxed{T_0(\Delta x_1 - \Delta x_2) + T_1 \Delta x_2 - T_2 \Delta x_1 =
+	\frac{\dot{q}}{\lambda} \det\left( \mm{J}(x, y) \right).}
+\end{equation}
+Assuming the boundary is on the left we get to a similar argumentation to
+\begin{equation}
+	\boxed{T_0(\Delta y_2 - \Delta y_1) - T_1\Delta y_2 + T_2\Delta y_1 =
+	\frac{\dot{q}}{\lambda} \det\left( \mm{J}(x, y) \right)}.
 \end{equation}
 
 \section{Radiation}
