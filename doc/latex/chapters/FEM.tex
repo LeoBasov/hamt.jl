@@ -77,3 +77,25 @@ which can be explicitly given as for the new coordinate system as
 	\phi_1(\xi, \eta) &= \xi\\
 	\phi_2(\xi, \eta) &= \eta.
 \end{align}
+Using this ansatz function the temperature is defined in the support space as
+\begin{equation}
+	T(\xi, \theta)  = \sum_i^3 T_i \phi_i
+\end{equation}
+and its gradient
+\begin{align}
+	\nabla T(\xi, \eta) &=
+	\begin{pmatrix}
+	\pdv{T}{\xi}\pdv{\xi}{x} + \pdv{T}{\eta}\pdv{\eta}{x}\\
+	\pdv{T}{\xi}\pdv{\xi}{y} + \pdv{T}{\eta}\pdv{\eta}{y}
+	\end{pmatrix}\\
+	&= \frac{1}{\det\left(\mm{J}(x,y)\right)}
+	\begin{pmatrix}
+	(-T_0 + T_1)\Delta y_2 - (-T_0 + T_2)\Delta y_1\\
+	-(-T_0 + T_1)\Delta x_2 + (-T_0 + T_2)\Delta x_1
+	\end{pmatrix}\\
+	&= \frac{1}{\det\left(\mm{J}(x,y)\right)}
+	\begin{pmatrix}
+	T_0(\Delta y_1 - \Delta y_2) + T_1\Delta y_2 - T_2\Delta y_1\\
+	T_0(\Delta x_2 - \Delta x_1) - T_1 \Delta x_2 + T_2 \Delta x_1
+	\end{pmatrix}.
+\end{align}
