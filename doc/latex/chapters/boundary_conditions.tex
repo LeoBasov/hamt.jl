@@ -1,5 +1,15 @@
 \chapter{Boundary Conditions}
 
+\section{Heat Flux}
+Given a boundary segment we can prescribe the a heat flux normal to that boundary as
+\begin{equation}
+	\lambda \left(\vec{n} \cdot \nabla T \right) = \dot{q}_{\perp}
+\end{equation}
+where $\lambda$ is the thermal conductivity, $\vec{n}$ the normal vector of the boundary, $\nabla T$ the temperature gradient at a given point in the cell and $\dot{q}_{\perp}$ the differential heat flux perpendicular to the boundary.
+
+We use linear element as our ansatz function for $T$ and triangles as cells which means that $\vec{n}$ and $\nabla T$ are constants.
+If we now assume a per cell constant thermal conductivity $\lambda$ this means that the differential heat flux $\dot{q}_{\perp}$ must be constant over a given cell side.
+
 \section{Radiation}
 The net radiation heat flux from surface 1 to surface 2 using grey body radiation can be calculated as 
 \begin{equation}
@@ -29,19 +39,16 @@ the configuration factor from surface $\overline{\mm{AB}}$ to surface $\overline
 \end{equation}
 where $\overline{\mm{XY}}$ is the distance from $\mm{X}$ to $\mm{Y}$.
 The total heat flux from or to a single surface is the sum of the heat fluxes to other surfaces plus the heat flux to the background
+\begin{align}
+	\dot{Q}_{tot} = \sigma A_1 \left\{\epsilon_1 T_1^4 \sum_i F_{1 \rightarrow i} - \sum_i \epsilon_i F_{1 \rightarrow i}  T_i^4 \right\} + \dot{Q}_{backgr}\\
+	\dot{Q}_{tot} = \sigma A_1 \left\{\epsilon_1 T_1^4 \sum_i F_{1 \rightarrow i} - \sum_i \epsilon_i F_{1 \rightarrow i}  T_i^4  +  F_{1 \rightarrow bg} (\epsilon_i T_1^4 - \epsilon_{bg} T_{bg}^4) \right\}
+\end{align}
+Since $F_{1 \rightarrow bg} = 1 - \sum_i F_{1 \rightarrow i} $ we get
 \begin{equation}
-	\dot{Q}_{tot} = \sigma A_1 \left\{\epsilon_1 T_1^4 \sum_i F_{1 \rightarrow i} - \sum_i \epsilon_i F_{1 \rightarrow i}  T_i^4 \right\} + \dot{Q}_{backgr}
+	\dot{Q}_{tot} = \sigma A_1 \left\{\epsilon_1 T_1^4  - \sum_i \epsilon_i F_{1 \rightarrow i}  T_i^4  - F_{1 \rightarrow bg} ) \epsilon_{bg} T_{bg}^4 \right\}
 \end{equation}
 
-In terms of boundary conditions we ca write
+In terms of boundary conditions, using $\dot{q}_{1 \rightarrow 2} = \dot{Q}_{1 \rightarrow 2} / A_1$,we ca write
 \begin{equation}
-	\lambda \left(\vec{n} \cdot \nabla T \right) = \frac{\dot{Q}_{1 \rightarrow 2}}{A_1} = \sigma F_{1 \rightarrow 2} \left(\epsilon_1 T1^4 - \epsilon_2 T_2^4\right)
-\end{equation}
-and using a Taylor series
-\begin{equation}
-	\mm{T}\left[ T^4 \right] \approx T_0^4 + 4 T_0^3 \left(T - T_0 \right) =  4 T_0^3 T - 3 T_0^4
-\end{equation}
-and the shorthand $\tilde{\epsilon}_i = \epsilon_i \sigma F_{1 \rightarrow 2}$ we get
-\begin{equation}
-	\lambda \left(\vec{n} \cdot \nabla T \right)  - 4 \tilde{\epsilon}_1 T_{1, 0}^3 T_1 + 4 \tilde{\epsilon}_2 T_{2, 0}^3 T_2   = 3 \tilde{\epsilon}_2 T_{2, 0}^4 - 3 \tilde{\epsilon}_1 T_{1, 0}^4.
+	\lambda \left(\vec{n} \cdot \nabla T \right) = \dot{q}_{1 \rightarrow 2}
 \end{equation}
