@@ -16,3 +16,4 @@ execute()
 
 export_solution("solution")
 
+finish_solver()

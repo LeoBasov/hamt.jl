@@ -38,27 +38,27 @@ function test_convert_Gmsh2_to_Mesh()
 
 	@test mesh.cells[1].nodes[1] == 2
 	@test mesh.cells[1].nodes[2] == 5
-	@test mesh.cells[1].boundaries[1] == -1
-	@test mesh.cells[1].boundaries[2] == -1
-	@test mesh.cells[1].boundaries[3] == 1
+	@test mesh.cells[1].sides[1].boundary == -1
+	@test mesh.cells[1].sides[2].boundary == -1
+	@test mesh.cells[1].sides[3].boundary == 1
 
 	@test mesh.cells[2].nodes[1] == 1
 	@test mesh.cells[2].nodes[2] == 5
-	@test mesh.cells[2].boundaries[1] == -1
-	@test mesh.cells[2].boundaries[2] == -1
-	@test mesh.cells[2].boundaries[3] == 4
+	@test mesh.cells[2].sides[1].boundary == -1
+	@test mesh.cells[2].sides[2].boundary == -1
+	@test mesh.cells[2].sides[3].boundary == 4
 
 	@test mesh.cells[3].nodes[1] == 3
 	@test mesh.cells[3].nodes[2] == 5
-	@test mesh.cells[3].boundaries[1] == -1
-	@test mesh.cells[3].boundaries[2] == -1
-	@test mesh.cells[3].boundaries[3] == 2
+	@test mesh.cells[3].sides[1].boundary == -1
+	@test mesh.cells[3].sides[2].boundary == -1
+	@test mesh.cells[3].sides[3].boundary == 2
 
 	@test mesh.cells[4].nodes[1] == 4
 	@test mesh.cells[4].nodes[2] == 5
-	@test mesh.cells[4].boundaries[1] == -1
-	@test mesh.cells[4].boundaries[2] == -1
-	@test mesh.cells[4].boundaries[3] == 3
+	@test mesh.cells[4].sides[1].boundary == -1
+	@test mesh.cells[4].sides[2].boundary == -1
+	@test mesh.cells[4].sides[3].boundary == 3
 
 	@test length(mesh.nodes[1].adjacent_cells) == 2
 	@test length(mesh.nodes[2].adjacent_cells) == 2
@@ -109,6 +109,9 @@ function test_ntr_mesh()
 	@test mesh.nodes[2].adjacent_nodes[5] == 38
 	@test mesh.nodes[2].adjacent_nodes[6] == 375
 	@test mesh.nodes[2].adjacent_nodes[7] == 37
+
+	@test HAMT.is_surface_cell(mesh.cells[898]) == true
+	@test HAMT.is_surface_cell(mesh.cells[1960]) == false
 end
 
 @testset "Mesh.jl" begin
@@ -118,9 +121,15 @@ end
 end
 
 function simple_triangular_solver_test()
+	background_radiaton_only = false
 	gmsh_file = HAMT.read_Gmsh_file("test_data/block_single_triangular.msh")
 	mesh = HAMT.convert_Gmsh2_to_Mesh(gmsh_file)
-	solution::Vector{Float64} = []
+	solution::Vector{Float64} =  []
+	resize!(solution, length(mesh.nodes))
+	HAMT.set_boundary!(mesh, "top", HAMT.DIRICHLET, 1.0, background_radiaton_only)
+	HAMT.set_boundary!(mesh, "buttom", HAMT.DIRICHLET, 1.0, background_radiaton_only)
+	HAMT.set_boundary!(mesh, "left", HAMT.DIRICHLET, 1.0, background_radiaton_only)
+	HAMT.set_boundary!(mesh, "right", HAMT.DIRICHLET, 1.0, background_radiaton_only)
 	matrix, vector = HAMT.convert_triangular_mesh(solution, mesh, CARTESIAN)
 	HAMT.solve_heat_equation!(solution, mesh, CARTESIAN)
 
@@ -157,24 +166,29 @@ function simple_triangular_solver_test()
 end
 
 function set_boundary_test()
+	background_radiaton_only = false
 	gmsh_file = HAMT.read_Gmsh_file("test_data/block_single_triangular.msh")
 	mesh = HAMT.convert_Gmsh2_to_Mesh(gmsh_file)
-	HAMT.set_boundary!(mesh, "top", HAMT.DIRICHLET, 3.0)
+	HAMT.set_boundary!(mesh, "top", HAMT.DIRICHLET, 3.0, background_radiaton_only)
+	HAMT.set_boundary!(mesh, "buttom", HAMT.DIRICHLET, 1.0, background_radiaton_only)
+	HAMT.set_boundary!(mesh, "left", HAMT.NEUMANN, 0.0, background_radiaton_only)
+	HAMT.set_boundary!(mesh, "right", HAMT.NEUMANN, 0.0, background_radiaton_only)
 	solution::Vector{Float64} = []
+	resize!(solution, length(mesh.nodes))
 	matrix, vector = HAMT.convert_triangular_mesh(solution, mesh, CARTESIAN)
 	HAMT.solve_heat_equation!(solution, mesh, CARTESIAN)
 
 	@test vector[1] == 1.0
 	@test vector[2] == 1.0
-	@test vector[3] == 2.0
-	@test vector[4] == 2.0
+	@test vector[3] == 3.0
+	@test vector[4] == 3.0
 	@test vector[5] == 0.0
 
 	@test solution[1] == 1.0
 	@test solution[2] == 1.0
-	@test solution[3] == 2.0
-	@test solution[4] == 2.0
-	@test solution[5] == 1.5
+	@test solution[3] == 3.0
+	@test solution[4] == 3.0
+	@test solution[5] == 2.0
 end
 
 @testset "Solver.jl" begin

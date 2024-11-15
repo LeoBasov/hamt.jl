@@ -13,8 +13,6 @@ set_boundary("keeper_front", RADIATION, 1.0)
 set_boundary("keeper_buttom", RADIATION, 1.0)
 set_boundary("keeper_left", RADIATION, 1.0)
 
-execute(CYLINDER)
-
-export_solution("ntr", surface=true)
+export_mesh("ntr")
 
 finish_solver()

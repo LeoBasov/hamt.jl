@@ -1,0 +1,54 @@
+\chapter{Heat Equation}
+
+\section{General Statements}
+Given is the heat equation
+\begin{equation}
+\label{eqn:heat_equation}
+	\pdv{\left(\rho c_p T \right)}{t} = \nabla \cdot \left(\lambda \nabla T \right) + \dot{q}_V
+\end{equation}
+where $\rho$ is the density, $c_p$ the heat capacity at constant pressure, $\lambda$ the thermal conductivity, $T$ the temperature and $\dot{q}_V$ a volumetric heat source.
+Assuming piecewise constant material properties and no changes in time Eqn.~\ref{eqn:heat_equation} can be rewritten as
+\begin{equation}
+	\alpha \nabla^2 T  + \beta \,\dot{q}_V = 0
+\end{equation}
+where $\alpha = \frac{\lambda}{\rho c_p}$ and $\beta = \frac{1}{\rho c_p}$.
+
+\section{2D FEM Discretization Using a Triangular Grid}
+Using a tetrahedral base function as defined in the previous chapter and assuming a volumetric heat flux which is constant per cell we can write
+\begin{align}
+	\sum_c \alpha_c \iint \left(\pdv[2]{T}{x} + \pdv[2]{T}{y}\right) &\phi_{c} \diff{x} \diff{y} = \\
+	-\sum_c \beta_c \dot{q}_c \iint &\phi_{c} \diff{x} \diff{y}.
+\end{align}
+Using integration by parts and the fact that the support is defined such that is is zero and at the boundary we get for the left hand side looking at a single cell and dropping the summation
+\begin{align}
+\mm{LHS} &= \alpha \iint \left(\pdv{T}{x}\pdv{\phi}{x} + \pdv{T}{y}\pdv{\phi}{y} \right) \diff{x} \diff{y}\\
+\mm{RHS} &= \beta \dot{q} \iint \phi \diff{x} \diff{y}.
+\end{align}
+The missing minus sign on the RHS comes from the minus sign in the integration by parts method.
+
+We will now using coordinate transformation to unit triangle.
+The right hand side can imidiatly be evaluated as
+\begin{align}
+	\mm{RHS} = \beta \dot{q} \int_0^1 \int_0^{1 - \eta} \phi \det\left( \mm{J}(x, y) \right) \diff{\xi} \diff{\eta} = \frac{1}{6} \beta \dot{q}\det\left( \mm{J}(x, y) \right).
+\end{align}
+For the right had side we need to transform the derivatives.
+We get
+\begin{align}
+	\pdv{T}{x}\pdv{\phi}{x} &= \left(\pdv{T}{\xi}\pdv{\xi}{x} + \pdv{T}{\eta}\pdv{\eta}{x}\right) \left(\pdv{\phi}{\xi}\pdv{\xi}{x} + \pdv{\phi}{\eta}\pdv{\eta}{x}\right)\\
+	&= \frac{\Delta y_1 - \Delta y_2}{\det\left( \mm{J}(x, y) \right)^2} \bigg(T_0(\Delta y_1 - \Delta y_2) + T_1\Delta y_2 - T_2\Delta y_1 \bigg)
+\end{align}
+and
+\begin{align}
+	\pdv{T}{y}\pdv{\phi}{y} &= \left(\pdv{T}{\xi}\pdv{\xi}{y} + \pdv{T}{\eta}\pdv{\eta}{y}\right) \left(\pdv{\phi}{\xi}\pdv{\xi}{y} + \pdv{\phi}{\eta}\pdv{\eta}{y}\right)\\
+	&= \frac{\Delta x_2 - \Delta x_1}{\det\left( \mm{J}(x, y) \right)^2} \bigg(T_0(\Delta x_2 - \Delta x_1) - T_1 \Delta x_2 + T_2 \Delta x_1\bigg)
+\end{align}
+Putting back into LHS we get
+\begin{align}
+	\alpha \int_0^1 \int_0^{1 - \eta} \pdv{T}{x}\pdv{\phi}{x} \det\left( \mm{J}(x, y) \right) \diff{\xi} \diff{\eta}  =\\
+	\frac{1}{2} \alpha \frac{\Delta y_1 - \Delta y_2}{\det\left( \mm{J}(x, y) \right)} \bigg(T_0(\Delta y_1 - \Delta y_2) + T_1\Delta y_2 - T_2\Delta y_1 \bigg)
+\end{align}
+and
+\begin{align}
+	\alpha \int_0^1 \int_0^{1 - \eta} \pdv{T}{y}\pdv{\phi}{y} \det\left( \mm{J}(x, y) \right) \diff{\xi} \diff{\eta}  =\\
+	\frac{1}{2} \alpha \frac{\Delta x_2 - \Delta x_1}{\det\left( \mm{J}(x, y) \right)} \bigg(T_0(\Delta x_2 - \Delta x_1) - T_1 \Delta x_2 + T_2 \Delta x_1\bigg).
+\end{align}
