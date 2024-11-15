@@ -85,6 +85,8 @@ Using this ansatz function the temperature is defined in the support space as
 \end{equation}
 and its gradient
 \begin{align}
+	\label{eqn:grad_T}
+	\begin{split}
 	\nabla T(\xi, \eta) &=
 	\begin{pmatrix}
 	\pdv{T}{\xi}\pdv{\xi}{x} + \pdv{T}{\eta}\pdv{\eta}{x}\\
@@ -92,12 +94,8 @@ and its gradient
 	\end{pmatrix}\\
 	&= \frac{1}{\det\left(\mm{J}(x,y)\right)}
 	\begin{pmatrix}
-	(-T_0 + T_1)\Delta y_2 - (-T_0 + T_2)\Delta y_1\\
-	-(-T_0 + T_1)\Delta x_2 + (-T_0 + T_2)\Delta x_1
-	\end{pmatrix}\\
-	&= \frac{1}{\det\left(\mm{J}(x,y)\right)}
-	\begin{pmatrix}
 	T_0(\Delta y_1 - \Delta y_2) + T_1\Delta y_2 - T_2\Delta y_1\\
 	T_0(\Delta x_2 - \Delta x_1) - T_1 \Delta x_2 + T_2 \Delta x_1
 	\end{pmatrix}.
+	\end{split}
 \end{align}

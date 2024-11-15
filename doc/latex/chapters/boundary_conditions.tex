@@ -3,42 +3,20 @@
 \section{Heat Flux}
 Given a boundary segment we can prescribe the a heat flux normal to that boundary as
 \begin{equation}
-	\lambda \left(\vec{n} \cdot \nabla T \right) = \dot{q}_{\perp}
+	-\lambda \left(\vec{n} \cdot \nabla T \right) = \dot{q}_{\perp}
 \end{equation}
 where $\lambda$ is the thermal conductivity, $\vec{n}$ the normal vector of the boundary, $\nabla T$ the temperature gradient at a given point in the cell and $\dot{q}_{\perp}$ the differential heat flux perpendicular to the boundary.
 
 We use linear element as our ansatz function for $T$ and triangles as cells which means that $\vec{n}$ and $\nabla T$ are constants.
 If we now assume a per cell constant thermal conductivity $\lambda$ this means that the differential heat flux $\dot{q}_{\perp}$ must be constant over a given cell side.
-
-Using the FEM ansatz with linear tetrahedral elements we can write
+Using  Eqn.~\ref{eqn:grad_T} we can write
 \begin{equation}
-	\lambda \int_0^1 \int_0^{1 - \eta} \left( \vec{n} \cdot \nabla T \right) \phi_0 \det\left( \mm{J}(x, y) \right) \diff{\xi} \diff{\eta} = \dot{q}_{\perp} \int_0^1 \int_0^{1 - \eta} \phi_0 \det\left( \mm{J}(x, y) \right) \diff{\xi} \diff{\eta}.
-\end{equation}
-Assuming the boundary is the button one the normal vector is simply
-\begin{equation}
-	\vec{n} = 
-	\begin{pmatrix}
-	0\\
-	-1
-	\end{pmatrix}
-\end{equation}
-which leads to
-\begin{equation}
-	\vec{n} \cdot \nabla T = -\pdv{T}{y} = \frac{T_0(\Delta x_1 - \Delta x_2) + T_1 \Delta x_2 - T_2 \Delta x_1}{\det\left(\mm{J}(x,y)\right)}
-\end{equation}
-which leads to
-\begin{align}
-	\left( T_0(\Delta x_1 - \Delta x_2) + T_1 \Delta x_2 - T_2 \Delta x_1\right) &\iint \phi_0 \diff{\xi} \diff{\eta} =\\
-	\frac{\dot{q}_{\perp} \det\left( \mm{J}(x, y) \right)}{\lambda} &\iint \phi_0 \diff{\xi} \diff{\eta}
-\end{align}
-\begin{equation}
-	\boxed{T_0(\Delta x_1 - \Delta x_2) + T_1 \Delta x_2 - T_2 \Delta x_1 =
-	\frac{\dot{q}_{\perp}}{\lambda} \det\left( \mm{J}(x, y) \right).}
-\end{equation}
-Assuming the boundary is on the left we get to a similar argumentation to
-\begin{equation}
-	\boxed{T_0(\Delta y_2 - \Delta y_1) - T_1\Delta y_2 + T_2\Delta y_1 =
-	\frac{\dot{q}_{\perp}}{\lambda} \det\left( \mm{J}(x, y) \right).}
+	\begin{split}
+	T_0 \big[\vec{n}_x (\Delta y_1 - \Delta y_2) +  \vec{n}_y (\Delta x_2 - \Delta x_1) \big] +\\
+	 T_1 (\vec{n}_x \Delta y_2 - \vec{n}_y \Delta x_2) +
+	 T_2 (\vec{n}_y \Delta x_1 - \vec{n}_x \Delta y_1) 
+	 =  -\frac{\dot{q}_{\perp}}{\lambda}\det\left( \mm{J}(x, y) \right).
+	 \end{split}
 \end{equation}
 
 \section{Radiation}
