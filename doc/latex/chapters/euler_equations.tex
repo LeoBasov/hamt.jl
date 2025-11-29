@@ -1,0 +1,31 @@
+\chapter{Euler Equations}
+The Euler equations in the conservative form can be stated using the Einstein summations as
+\begin{align}
+	\pdv{\rho}{t} + \pdv{}{x_j}\left(\rho u_j\right) &= 0\\
+	\pdv{}{t} \left( \rho u_i \right) + \pdv{}{x_j} \left(\rho u_i u_j + p \delta_{ij} \right) &= 0\\
+	\pdv{}{t} \left( \rho E \right) + \pdv{}{x_j} \left[(\rho E + p) u_j \right] &= 0
+\end{align}
+those are the continuum equation, momentum equation and energy equation.
+They are close using the ideal gas equation
+\begin{equation}
+	p = \rho R T
+\end{equation}
+and the equation for internal energy
+\begin{equation}
+	E = \frac{\gamma}{\gamma - 1} p + \frac{1}{2} \rho |u|^2.
+\end{equation}
+
+It can also be written as
+\begin{align}
+\pdv{\rho}{t} + \nabla \cdot (\rho \bb{u}) = 0\\
+\pdv{(\rho \bb{u})}{t} + \nabla \cdot (\rho \bb{u} \bb{u}^T) + \nabla p - \bb{f} = 0\\
+\pdv{E}{t} + \nabla \cdot (\bb{u}(E + p)) = 0
+\end{align}
+where
+\begin{equation}
+	E = \rho e + \frac{1}{2} \rho u^2
+\end{equation}
+and
+\begin{equation}
+	e = T c_v.
+\end{equation}
