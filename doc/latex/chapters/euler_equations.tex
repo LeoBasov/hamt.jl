@@ -17,7 +17,7 @@ and the equation for internal energy
 	\rho E = \frac{\gamma}{\gamma - 1} p + \frac{1}{2} \rho |u|^2.
 \end{equation}
 
-It can also be written as
+It can also be written in vector form as
 \begin{align}
 \pdv{\rho}{t} + \nabla \cdot (\rho \bb{u}) = 0\\
 \pdv{(\rho \bb{u})}{t} + \nabla \cdot (\rho \bb{u} \bb{u}^T) + \nabla p - \bb{f} = 0\\
@@ -59,3 +59,23 @@ which is equivalent for noble gases to
 	e = \frac{3}{2} \frac{k_B}{m} T
 \end{equation}
 where $m$ is the per molecule mass.
+
+\section{Inviscid steady state form}
+Disregarding body forces in vector form
+\begin{align}
+	\nabla \cdot (\rho \bb{u}) = 0\\
+	\nabla \cdot (\rho \bb{u} \bb{u}^T) + \nabla p = 0\\
+	\nabla \cdot (\bb{u}(E + p)) = 0
+\end{align}
+or in the Einstein notation
+\begin{align}
+	\pdv{\rho u_j}{x_j} = 0\\
+	\pdv{}{x_j} \left(\rho u_i u_j + p \delta_{ij} \right) = 0\\
+	\pdv{}{x_j} \left[(E + p) u_j \right] = 0
+\end{align}
+again with
+\begin{align}
+	E &= \rho e + \frac{1}{2} \rho \| \bb{u} \|^2\\
+	e &= c_v T\\
+	e &= \frac{3}{2} k_B T.
+\end{align}
