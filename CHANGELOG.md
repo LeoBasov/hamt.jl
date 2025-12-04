@@ -12,6 +12,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - grey body radiation
 - setting of background temperature
 
+## [0.8.0] - 2025-12-04
+
+### Added
+
+- added function to check correct node order for each cell
+
 ## [0.7.0] - 2024-11-15
 
 ### Added
