@@ -1,5 +1,6 @@
 using HAMT
 using Test
+using LinearAlgebra
 
 function test_read_Gmsh_file()
 	gmsh_file = HAMT.read_Gmsh_file("test_data/block_single_triangular.msh")
@@ -114,10 +115,28 @@ function test_ntr_mesh()
 	@test HAMT.is_surface_cell(mesh.cells[1960]) == false
 end
 
+function test_node_order()
+	gmsh_file = HAMT.read_Gmsh_file("test_data/half_circle.msh")
+	mesh = HAMT.convert_Gmsh2_to_Mesh(gmsh_file)
+
+	for cell in mesh.cells
+		A = mesh.nodes[cell.nodes[1]].position
+		B = mesh.nodes[cell.nodes[2]].position
+		C = mesh.nodes[cell.nodes[3]].position
+
+		AB = B - A
+		AC = C - A
+		crs = cross(AB, AC)
+
+		@test crs[3] > 0.0
+	end
+end
+
 @testset "Mesh.jl" begin
 	test_read_Gmsh_file()
 	test_convert_Gmsh2_to_Mesh()
 	test_ntr_mesh()
+	test_node_order()
 end
 
 function simple_triangular_solver_test()
