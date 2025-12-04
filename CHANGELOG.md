@@ -7,8 +7,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
-- performance upgrae for connecting LOS cells
-- non perfect contanct conditions for sufraces
+- performance upgrade for connecting LOS cells
+- non perfect contact conditions for sufraces
 - grey body radiation
 - setting of background temperature
 
