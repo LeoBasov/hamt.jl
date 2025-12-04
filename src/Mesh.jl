@@ -178,10 +178,11 @@ function setup_cells_and_nodes!(mesh, gmsh_file)
         if length(element) > 1 && element[2] == "2"
             cell = Cell()
             surf_id = parse(Int, element[4])
+            node_id1, node_id2, node_id3 = correct_node_order(element, mesh)
             cell.surface_id = mesh.surface_ids[surf_id]
-            cell.nodes[1] = parse(Int, element[6])
-            cell.nodes[2] = parse(Int, element[7])
-            cell.nodes[3] = parse(Int, element[8])
+            cell.nodes[1] = node_id1
+            cell.nodes[2] = node_id2
+            cell.nodes[3] = node_id3
             cell.barycentre = (mesh.nodes[cell.nodes[1]].position + mesh.nodes[cell.nodes[2]].position + mesh.nodes[cell.nodes[3]].position) / 3.0
             push!(mesh.cells, cell)
         end
@@ -208,6 +209,22 @@ function setup_cells_and_nodes!(mesh, gmsh_file)
                 end
             end
         end
+    end
+end
+
+function correct_node_order(element, mesh)
+    node_id1 = parse(Int, element[6])
+    node_id2 = parse(Int, element[7])
+    node_id3 = parse(Int, element[8])
+
+    AB = mesh.nodes[node_id2].position - mesh.nodes[node_id1].position
+    AC = mesh.nodes[node_id3].position - mesh.nodes[node_id1].position
+    crs = cross(AB, AC)
+
+    if crs[3] < 0.0
+        return node_id1, node_id3, node_id2
+    else
+        return node_id1, node_id2, node_id3
     end
 end
 
