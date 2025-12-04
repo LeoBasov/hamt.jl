@@ -9,12 +9,6 @@ Point(3) = {1, 5, 0, 1.0};
 //+
 Point(4) = {0, 5, 0, 1.0};
 //+
-Point(5) = {1.5, 2.5, 0, 1.0};
-//+
-Point(6) = {2.0, 2.5, 0, 1.0};
-//+
-Point(7) = {2.5, 2.5, 0, 1.0};
-//+
 Line(1) = {1, 2};
 //+
 Line(2) = {2, 3};
@@ -23,17 +17,17 @@ Line(3) = {3, 4};
 //+
 Line(4) = {4, 1};
 //+
-Circle(5) = {5, 6, 7};
-//+
-Circle(6) = {7, 6, 5};
-//+
 Curve Loop(1) = {4, 1, 2, 3};
 //+
 Plane Surface(1) = {1};
 //+
-Curve Loop(2) = {5, 6};
+Circle(5) = {2.0, 2.5, 0, 0.5, 0, 2*Pi};
+//+
+Curve Loop(2) = {5};
 //+
 Plane Surface(2) = {2};
+//+
+Physical Curve("circle", 6) = {5};
 //+
 Physical Curve("left", 7) = {4};
 //+
@@ -43,8 +37,6 @@ Physical Curve("right", 9) = {2};
 //+
 Physical Curve("buttom", 10) = {1};
 //+
-Physical Curve("circle", 11) = {5, 6};
+Physical Surface("plane", 11) = {1};
 //+
-Physical Surface("plane", 12) = {1};
-//+
-Physical Surface("circle", 13) = {2};
+Physical Surface("circle", 12) = {2};

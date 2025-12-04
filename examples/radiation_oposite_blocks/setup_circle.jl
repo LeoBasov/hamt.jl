@@ -7,9 +7,9 @@ set_boundary("top", RADIATION, 1.0)
 set_boundary("buttom", RADIATION, 1.0)
 set_boundary("right", RADIATION, 1.0)
 
-set_boundary("circle", DIRICHLET, 300.0)
+set_boundary("circle", RADIATION, 1.0)
 
-#set_surface("right", "volumetric_heat_source", 100.0)
+set_surface("circle", "volumetric_heat_source", 100.0)
 
 execute()
 
