@@ -1,11 +1,11 @@
 using HAMT
 
-read_mesh("examples/airfoil/NACA0012_semi_fine.msh")
+read_mesh("examples/airfoil/NACA0012_small_fine.msh")
 
-set_boundary("left", NEUMANN, -12.5)
-set_boundary("right", NEUMANN, 12.5)
-set_boundary("top", NEUMANN,0 )
-set_boundary("buttom", NEUMANN, 0)
+set_boundary("left", NEUMANN, -12.3100969126526)
+set_boundary("right", NEUMANN, 12.3100969126526)
+set_boundary("top", NEUMANN,2.170602220836629)
+set_boundary("buttom", NEUMANN, -2.170602220836629)
 
 set_boundary("airfoil", NEUMANN, 0.0)
 

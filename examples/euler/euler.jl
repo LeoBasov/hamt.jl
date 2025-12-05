@@ -1,6 +1,6 @@
 using HAMT
 
-read_mesh("examples/euler/circle.msh")
+read_mesh("examples/euler/circle_fine.msh")
 
 set_boundary("left", NEUMANN, -9.6)
 set_boundary("right", NEUMANN, 9.6)
