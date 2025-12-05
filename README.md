@@ -55,3 +55,25 @@ $$
     C_p = 1 - \left(\frac{\|\vec{v}\|}{\|\vec{v}_{\infty}\|}\right)^2.
 \end{equation}
 $$
+
+### Potential flow around a cylinder
+
+The Laplcace's equation in cylinder coordinates can be written as
+$$
+\begin{equation}
+    \frac{1}{r}\frac{\partial}{\partial r} ...
+\end{equation}
+$$
+which must sattisfy the boundary condition
+$$
+\begin{equation}
+    \phi(r, \theta) = U_r \left(1 + \frac{R^2}{r^2} \right) \cos \theta
+\end{equation}
+$$
+the velocity component are
+$$
+\begin{align}
+    V_r &= \frac{\partial \phi}{\partial r} = U \left(1 - \frac{R^2}{r^2} \right) \cos \theta\\
+    V_{\theta} &= \frac{1}{r}\frac{\partial \phi}{\partial \theta} =  -U \left(1 + \frac{R^2}{r^2} \right) \sin \theta.
+\end{align}
+$$
