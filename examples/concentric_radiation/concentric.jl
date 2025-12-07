@@ -2,6 +2,8 @@
 
 using HAMT
 
+init()
+
 read_mesh("examples/concentric_radiation/concentric_coarse.msh")
 
 set_boundary("inner", DIRICHLET, 500.0)
@@ -16,4 +18,4 @@ execute()
 
 export_solution("concentric_coarse")
 
-finish_solver()
+finish()

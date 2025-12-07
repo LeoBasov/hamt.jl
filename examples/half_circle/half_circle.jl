@@ -1,5 +1,7 @@
 using HAMT
 
+init()
+
 read_mesh("examples/half_circle/circle_very_fine.msh")
 
 set_boundary("inner", DIRICHLET, 300.0)
@@ -12,4 +14,4 @@ execute()
 
 export_solution("half_circle")
 
-finish_solver()
+finish()

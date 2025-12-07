@@ -151,6 +151,8 @@ function set_neumann_boundary!(matrix, vector, mesh, node_id)
 end
 
 function set_radiation_boundary!(matrix, vector, mesh, node_id, solution)
+    #TODO: update this function to correctly solve the given set of equations similarly to the Neumann boundary condition case
+
     node = mesh.nodes[node_id]
     boundary1 = mesh.boundaries[node.boundaries[1]]
     boundary2 = mesh.boundaries[node.boundaries[2]]
