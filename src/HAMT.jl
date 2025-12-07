@@ -3,7 +3,7 @@ module HAMT
 using Serialization
 using TOML
 
-export initialize_ht
+export init
 export read_hamt_mesh
 export read_mesh
 export set_boundary
@@ -11,7 +11,7 @@ export set_surface
 export export_mesh
 export execute
 export export_solution
-export finalize_ht
+export finish
 
 export DIRICHLET, NEUMANN, RADIATION, HEAT_FLUX
 export CARTESIAN, CYLINDER
@@ -28,7 +28,7 @@ max_error = 1e-12
 initial_temp = 300.0
 hamt_mesh::Bool = false
 
-function initialize_ht()
+function init()
     global timer
     global mesh
     global solution
@@ -147,7 +147,7 @@ function export_solution(file_name::String; surface::Bool = false)
     return nothing
 end
 
-function finalize_ht()
+function finish()
     print_timer_evaluation(timer)
 end
 

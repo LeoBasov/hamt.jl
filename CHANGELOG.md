@@ -16,11 +16,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
-- function initialize_ht which should be called as the first function in a test case setup
+- function init which should be called as the first function in a test case setup
 
 ### Changed
 
-- renamed function finish_solver to finalize_ht which should be called as the last function in a test case setup
+- renamed function finish_solver to finish which should be called as the last function in a test case setup
 
 ## [0.8.1] - 2025-12-07
 

@@ -1,6 +1,6 @@
 using HAMT
 
-initialize_ht()
+init()
 
 read_mesh("examples/half_circle/circle_very_fine.msh")
 
@@ -14,4 +14,4 @@ execute()
 
 export_solution("half_circle")
 
-finalize_ht()
+finish()
