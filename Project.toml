@@ -1,6 +1,6 @@
 name = "HAMT"
 uuid = "92179113-1a75-4767-9034-8063768e90ca"
-version = "0.8.1"
+version = "0.9.0"
 authors = ["Leo Basov <basov.leo@gmail.com>"]
 
 [deps]

@@ -12,6 +12,16 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - grey body radiation
 - setting of background temperature
 
+## [0.9.0] - 2025-12-07
+
+### Added
+
+- function initialize_ht which should be called as the first function in a test case setup
+
+### Changed
+
+- renamed function finish_solver to finalize_ht which should be called as the last function in a test case setup
+
 ## [0.8.1] - 2025-12-07
 
 ### Fixed
