@@ -1,7 +1,9 @@
 module HAMT
 
 using Serialization
+using TOML
 
+export initialize_ht
 export read_hamt_mesh
 export read_mesh
 export set_boundary
@@ -9,7 +11,7 @@ export set_surface
 export export_mesh
 export execute
 export export_solution
-export finish_solver
+export finalize_ht
 
 export DIRICHLET, NEUMANN, RADIATION, HEAT_FLUX
 export CARTESIAN, CYLINDER
@@ -25,6 +27,24 @@ solution::Vector{Float64} = []
 max_error = 1e-12
 initial_temp = 300.0
 hamt_mesh::Bool = false
+
+function initialize_ht()
+    global timer
+    global mesh
+    global solution
+    global max_error
+    global initial_temp
+    global hamt_mesh
+    timer = Timer()
+    mesh = Mesh()
+    solution = []
+    max_error = 1e-12
+    initial_temp = 300.0
+    hamt_mesh = false
+    version = TOML.parsefile("Project.toml")["version"]
+    println("HAMT - Heat And Mass Transfer simulation tool, v", version, ", (C) 2025 Leo Basov")
+    println("="^(68 + length(version))) 
+end
 
 function read_hamt_mesh(file_name)
     global mesh
@@ -127,9 +147,8 @@ function export_solution(file_name::String; surface::Bool = false)
     return nothing
 end
 
-function finish_solver()
-    global Timer
+function finalize_ht()
     print_timer_evaluation(timer)
 end
 
-end # module HAMT
+end; # module HAMT
