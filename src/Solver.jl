@@ -119,8 +119,11 @@ function set_neumann_boundary!(matrix, vector, mesh, node_id)
     rot_mat[2, 1] = -1.0;
     rot_mat[3, 3] = 1.0;
 
-    normal = 0.5 * rot_mat * (node_pos_left - node.position) + 0.5 * rot_mat * (node.position - node_pos_right)
-    normal ./= norm(normal)
+    normal1 = rot_mat * (node_pos_left - node.position)
+    normal2 = rot_mat * (node.position - node_pos_right)
+
+    normal1 ./= norm(normal1)
+    normal2 ./= norm(normal2)
 
     for cell_id in node.adjacent_cells
         total_cell_area += get_cell_area(mesh, cell_id)
@@ -139,12 +142,12 @@ function set_neumann_boundary!(matrix, vector, mesh, node_id)
             node_pos_im = mesh.nodes[node_id_im].position
             node_pos_ip = mesh.nodes[node_id_ip].position
 
-            matrix[node_id, node_id_i] += factor * dot(rot_mat * (node_pos_ip - node_pos_im), normal)
+            matrix[node_id, node_id_i] += factor * dot(rot_mat * (node_pos_ip - node_pos_im), normal1)
+            matrix[node_id, node_id_i] += factor * dot(rot_mat * (node_pos_ip - node_pos_im), normal2)
         end
     end
 
-    #TODO (LB): implement correct area dependant average
-    vector[node_id] = (boundary1.value + boundary2.value) / 2.0
+    vector[node_id] = boundary1.value + boundary2.value
 end
 
 function set_radiation_boundary!(matrix, vector, mesh, node_id, solution)

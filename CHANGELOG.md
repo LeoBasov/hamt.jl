@@ -12,6 +12,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - grey body radiation
 - setting of background temperature
 
+## [0.8.1] - 2025-12-07
+
+### Fixed
+
+- Neumann boundary condition for curved geometries
+
 ## [0.8.0] - 2025-12-04
 
 ### Added
