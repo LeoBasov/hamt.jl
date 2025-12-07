@@ -1,5 +1,7 @@
 using HAMT
 
+init()
+
 read_mesh("examples/euler/circle_fine.msh")
 
 set_boundary("left", NEUMANN, -9.6)
@@ -13,4 +15,4 @@ execute()
 
 export_solution("euler")
 
-finish_solver()
+finish()
