@@ -1,5 +1,7 @@
 using HAMT
 
+init()
+
 read_mesh("examples/airfoil/NACA0012_small_fine.msh")
 
 set_boundary("left", NEUMANN, -12.3100969126526)
@@ -13,4 +15,4 @@ execute()
 
 export_solution("NACA0012")
 
-finish_solver()
+finish()
