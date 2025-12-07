@@ -1,12 +1,16 @@
 name = "HAMT"
 uuid = "92179113-1a75-4767-9034-8063768e90ca"
-authors = ["Leo Basov <basov.leo@gmail.com>"]
 version = "0.8.1"
+authors = ["Leo Basov <basov.leo@gmail.com>"]
 
 [deps]
 LinearAlgebra = "37e2e46d-f89d-539d-b4ee-838fcccc9c8e"
 LinearSolve = "7ed4a6bd-45f5-4d41-b270-4a48e9bafcae"
 Printf = "de0858da-6303-5e67-8744-51eddeeeb8d7"
 Serialization = "9e88b42a-f829-5b0c-bbe9-9e923198166b"
+TOML = "fa267f1f-6049-4f14-aa54-33bafae1ed76"
 Test = "8dfed614-e22c-5e08-85e1-65c5234f0b40"
 WriteVTK = "64499a7a-5c06-52f2-abe2-ccb03c286192"
+
+[compat]
+TOML = "1.0.3"
